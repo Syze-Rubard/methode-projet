@@ -1,0 +1,1 @@
+- [{{NOM}} project](project-{{nom}}.md) — what the project is, its current state and its main decisions
