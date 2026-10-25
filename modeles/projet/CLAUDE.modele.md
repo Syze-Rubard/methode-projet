@@ -26,7 +26,7 @@ Une tâche n'est finie qu'après ces étapes :
 ## Mémoire
 
 - La mémoire du projet vit dans `docs/memoire/` et voyage avec le disque et le dépôt git.
-- Sur chaque PC, `.claude/settings.local.json` (non versionné) y dirige la mémoire automatique de Claude Code avec le réglage `autoMemoryDirectory`. Si le disque change de lettre, corriger ce chemin.
+- Sur chaque PC, `.claude/settings.local.json` (non versionné) y dirige la mémoire automatique de Claude Code avec le réglage `autoMemoryDirectory`. Le script `preparer-projet.ps1` du skill le crée, et corrige le chemin si le disque change de lettre.
 - Toute info durable (décision, préférence, état du projet) y est ajoutée : une fiche par sujet et une ligne dans `MEMORY.md`. On met à jour une fiche existante plutôt que d'en créer une en double.
 
 ## Compaction

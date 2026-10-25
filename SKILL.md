@@ -11,27 +11,53 @@ Une méthode pour mener un gros projet avec Claude Code sans perdre en qualité 
 3. **Petit bout par petit bout.** Une fonctionnalité par session, testée et commitée avant la suivante.
 4. **Automatiser plutôt que se fier aux consignes.** Ce qui doit arriver à coup sûr passe par un hook ou un réglage.
 
+## Les scripts
+
+Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powershell -NoProfile -ExecutionPolicy Bypass -File "<dossier du skill>\<script>.ps1"`. Ils ne détruisent rien et se relancent sans risque. Chaque ligne de leur sortie commence par un état : `[ok]`, `[créé]`, `[installé]`, `[réglé]`, `[à faire]` ou `[à remplir]`.
+
+- **`preparer-pc.ps1`**, une fois par PC :
+  - il installe avec winget ce qui manque (git, Git LFS, GitHub CLI) et active Git LFS ;
+  - il relie le skill à Claude Code et vérifie la compaction automatique.
+
+  Avant de le lancer, prévenir l'utilisateur que Windows peut lui demander d'autoriser une installation. Puis l'aider sur chaque `[à faire]` :
+  - **identité git** : lui demander un nom et un e-mail, puis relancer avec `-NomGit` et `-EmailGit`. Si un dépôt peut devenir public, proposer l'adresse « noreply » de GitHub ;
+  - **connexion à GitHub** : `gh auth login`, lancé par l'utilisateur dans un nouveau terminal, jamais par Claude ;
+  - **compaction** : `/autocompact 300k`, que l'utilisateur tape lui-même.
+
+  Relancer le script jusqu'à ce qu'il ne reste rien à faire.
+- **`preparer-projet.ps1 -Chemin <dossier> [-Nom <nom>] [-Techno base|unity]`**, pour chaque projet et sur chaque PC :
+  - il copie les modèles sans écraser un fichier existant ;
+  - il dirige la mémoire de Claude Code vers `docs/memoire`, et corrige le chemin si le disque a changé de lettre ;
+  - il initialise git, avec LFS si la techno en a besoin ;
+  - il liste les `{{...}}` qui restent à remplir.
+
+Les modèles :
+- `modeles/projet/` contient les fichiers communs à tous les projets ;
+- `modeles/techno/<techno>/` contient le `.gitignore` et le `.gitattributes` de chaque techno ;
+- le script remplit `{{NOM}}` et `{{nom}}`, et Claude remplit les autres `{{...}}`.
+
 ## Démarrer un projet
 
 1. Demander à l'utilisateur le nom du projet, son pitch en une phrase, la techno, et le document de conception (GDD, cahier des charges…) s'il existe.
-2. Créer la structure à partir des modèles de `modeles/`, en remplaçant les `{{...}}` et en retirant ce qui ne sert pas :
+2. Lancer `preparer-pc.ps1`. Si tout est `[ok]`, passer à la suite.
+3. Lancer `preparer-projet.ps1` sur le dossier du projet.
+4. Remplir chaque `{{...}}` listé, retirer ce qui ne sert pas, et compléter la fiche projet de la mémoire et la section « Outils du PC » de la carte (moteur, logiciels, MCP).
+5. Faire un premier commit, puis sauvegarder hors du disque : `gh repo create <nom> --private --source . --push`.
+6. Dire à l'utilisateur que les hooks et la mémoire prennent effet à la session suivante.
 
-   | Fichier du projet | Modèle |
-   |---|---|
-   | `CLAUDE.md` | `modeles/CLAUDE.modele.md` |
-   | `docs/README.md` (la carte) | `modeles/docs/README.md` |
-   | `docs/architecture.md` | `modeles/docs/architecture.md` |
-   | `docs/memoire/MEMORY.md` et une fiche `project-<nom>.md` | `modeles/docs/memoire/MEMORY.md` |
-   | `.claude/settings.json` (hooks) | `modeles/.claude/settings.json` |
-   | `.claude/settings.local.json` | `modeles/.claude/settings.local.json`, avec le chemin absolu du projet |
-   | `.claude/hooks/rappel-clear.ps1` | `modeles/.claude/hooks/rappel-clear.ps1`, copié avec `Copy-Item` pour garder le BOM |
-   | `.gitignore`, `.gitattributes` | `modeles/unity/` pour Unity ; sinon les adapter à la techno |
+## Reprendre un projet sur un autre PC
 
-3. `git init -b main`, puis `git lfs install --local` si le projet a des assets lourds, puis un premier commit.
-4. Sauvegarde hors du disque : `gh repo create <nom> --private --source . --push`. Si `gh` manque : `winget install --id GitHub.cli`, puis l'utilisateur lance lui-même `gh auth login`.
-5. Conseiller `/autocompact 300k` si l'utilisateur ne l'a pas réglé.
+1. Lancer `preparer-pc.ps1`.
+2. Récupérer le projet : brancher le disque, ou `gh repo clone <nom>`.
+3. Lancer `preparer-projet.ps1 -Chemin <dossier du projet>`. Il ne crée que ce qui manque, dont `.claude/settings.local.json`, que git ne suit pas.
+4. Installer avec l'utilisateur les outils de la section « Outils du PC » de la carte du projet.
+5. Ouvrir une nouvelle session, pour activer les hooks et la mémoire.
 
-Les hooks et `autoMemoryDirectory` ne prennent effet qu'à la session suivante.
+## Partager la méthode
+
+- La méthode tient dans le dossier de ce skill. On la partage en dépôt GitHub privé, en ajoutant la personne comme collaboratrice, ou en copie du dossier.
+- La personne installe Claude Code, puis suit le `README.md` du dossier : il lui fait lancer `preparer-pc.ps1`.
+- Elle a sa propre identité git et son propre compte GitHub. Ses projets ont leur propre mémoire.
 
 ## Le cycle d'une fonctionnalité
 
@@ -61,7 +87,7 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 ## Mémoire
 
 - La mémoire vit dans le projet (`docs/memoire/`) et se versionne avec lui : elle suit le disque, le dépôt et chaque PC.
-- `.claude/settings.local.json` contient `"autoMemoryDirectory": "<chemin absolu>/docs/memoire"` : la mémoire automatique de Claude Code écrit directement là, sans copie. Claude Code ignore ce réglage dans `settings.json`, d'où le fichier local, à recréer sur chaque PC et à corriger si le disque change de lettre.
+- `.claude/settings.local.json` contient `"autoMemoryDirectory": "<chemin absolu>/docs/memoire"` : la mémoire automatique de Claude Code écrit directement là, sans copie. Claude Code ignore ce réglage dans `settings.json`, d'où le fichier local, que `preparer-projet.ps1` crée sur chaque PC et corrige si le disque change de lettre.
 - Une fiche par sujet (frontmatter `name`, `description`, `metadata.type` : user, feedback, project ou reference), une ligne par fiche dans `MEMORY.md`. Mettre à jour plutôt que dupliquer, et ne pas recopier ce que CLAUDE.md ou le code disent déjà.
 - Fiches en anglais, docs en français.
 
@@ -101,8 +127,8 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 
 ## Améliorer la méthode
 
-La méthode vit dans `I:\Projets\methode-projet`, un dépôt git relié à `~/.claude/skills/methode-projet` par `install.ps1` (à lancer une fois par PC). Quand une façon de travailler s'améliore sur un projet :
-1. modifier ce fichier ou les modèles ;
+La méthode vit dans le dossier de ce skill, un dépôt git que `preparer-pc.ps1` relie à `~/.claude/skills/methode-projet`. Quand une façon de travailler s'améliore sur un projet :
+1. modifier ce fichier, les scripts ou les modèles. Un nouveau fichier commun va dans `modeles/projet/`, une nouvelle techno dans `modeles/techno/<techno>/` ;
 2. noter le changement et son pourquoi dans `CHANGELOG.md` ;
 3. commiter, et pousser si le dépôt a un remote.
 

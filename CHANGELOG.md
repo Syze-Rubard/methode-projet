@@ -2,6 +2,15 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : installation par scripts
+
+Pour obtenir le même résultat sur chaque PC et pour chaque personne, sans dépendre d'une copie faite à la main par Claude :
+- `preparer-pc.ps1` remplace `install.ps1`. Il installe git, Git LFS et GitHub CLI avec winget, relie le skill, vérifie la compaction et liste ce que l'utilisateur doit faire lui-même ;
+- `preparer-projet.ps1` crée ou complète un projet sans rien écraser. Il règle la mémoire sur le PC en cours et liste les `{{...}}` à remplir ;
+- les modèles sont rangés en `modeles/projet/` (communs) et `modeles/techno/<techno>/` (git par techno, avec `base` et `unity`). Le modèle de fiche projet de la mémoire est ajouté ;
+- la carte gagne une section « Outils du PC », pour réinstaller les outils propres au projet sur un autre PC ;
+- un `README.md` explique l'installation à une personne qui découvre la méthode.
+
 ## 2026-10-25 : première version
 
 Tirée du projet RogueHack :

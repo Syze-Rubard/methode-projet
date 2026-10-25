@@ -28,6 +28,14 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
 | {{DOCUMENT DE CONCEPTION ET SON LIEN}} | La conception du projet, source de vérité |
 | Skill `methode-projet` | La méthode de travail, commune à tous les projets |
 
+## Outils du PC
+
+Les outils de la méthode (git, Git LFS, GitHub CLI) sont installés par le script `preparer-pc.ps1` du skill. Ceux du projet, à installer sur chaque PC :
+
+| Outil | Version | Pour |
+|---|---|---|
+| {{OUTIL}} | {{VERSION}} | {{À QUOI IL SERT}} |
+
 ## Qui tient quoi à jour
 
 Un sujet par document, sans doublon.
@@ -38,6 +46,7 @@ Un sujet par document, sans doublon.
 | Principes, structure et conventions du code | [architecture.md](architecture.md) | un module, un dossier de code ou une convention change |
 | Décisions techniques | [architecture.md](architecture.md) | une décision technique est prise |
 | Dossiers et documents | cette carte | on en ajoute, en déplace ou en supprime un |
+| Outils du PC | cette carte | un outil ou sa version change |
 | Décisions, préférences, état du projet | [memoire/](memoire/MEMORY.md) | une info durable apparaît |
 | Règles de travail de Claude | [CLAUDE.md](../CLAUDE.md) | une règle change |
 | Méthode de travail | skill `methode-projet` | une façon de travailler s'améliore |
