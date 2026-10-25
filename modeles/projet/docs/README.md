@@ -16,6 +16,7 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
       rappel-clear.ps1      prévient quand c'est le bon moment de faire /clear
       garde-tests.ps1       empêche de finir ou de commiter du code non vérifié
       garde-secrets.ps1     empêche de commiter un secret
+      garde-generation-ia.ps1  empêche de générer avec une IA sans connaître son modèle
   .githooks/                hooks git versionnés : secrets et vérification avant chaque commit
   outils/
     verifier.ps1            lance toutes les vérifications du projet (créé avec le premier code)
@@ -25,6 +26,9 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
     architecture.md         principes de code, structure, conventions, décisions techniques
     feuille-de-route.md     les étapes du projet jusqu'au lancement, et où on en est
     licences.md             licence de chaque contenu externe ou généré par IA
+    generation-ia/
+      style.md              bible de style pour les IA génératives
+      modeles/              une fiche par modèle d'IA : comment lui parler (modèle : _modele.md)
     memoire/                mémoire de Claude : l'index MEMORY.md et une fiche par sujet
   {{DOSSIERS DU CODE ET DES CONTENUS}}
 ```
@@ -57,6 +61,8 @@ Un sujet par document, sans doublon.
 | Décisions techniques | [architecture.md](architecture.md) | une décision technique est prise |
 | Étapes du projet et avancement | [feuille-de-route.md](feuille-de-route.md) | une étape est finie, ajoutée ou déplacée |
 | Licences des contenus | [licences.md](licences.md) | un contenu externe ou généré par IA entre dans le projet |
+| Style des contenus générés par IA | [generation-ia/style.md](generation-ia/style.md) | une décision de style est prise |
+| Façon de parler à chaque modèle d'IA | [generation-ia/modeles/](generation-ia/modeles/_modele.md) | avant d'utiliser un modèle sans fiche, ou dont la fiche a plus de 60 jours |
 | Dossiers et documents | cette carte | on en ajoute, en déplace ou en supprime un |
 | Outils du PC | cette carte | un outil ou sa version change |
 | Décisions, préférences, état du projet | [memoire/](memoire/MEMORY.md) | une info durable apparaît |

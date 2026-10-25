@@ -69,6 +69,12 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Dépendances de sources connues, en version fixée, mises à jour une à la fois.
 - Chaque contenu externe ou généré par IA a sa ligne dans `docs/licences.md`, ajoutée dans la même session que lui.
 
+## Génération par IA (détails dans le skill, section « Génération par IA »)
+
+- Avant de générer une image, une vidéo, un modèle 3D ou un son, lire la fiche du modèle dans `docs/generation-ia/modeles/`. Si elle manque ou a plus de 60 jours, se renseigner d'abord dans les guides officiels de l'éditeur, puis l'écrire. Le hook `garde-generation-ia` refuse la génération sinon.
+- Tout contenu destiné au produit part de la bible de style `docs/generation-ia/style.md` et de ses images de référence.
+- Estimer le coût avant de lancer, et noter dans la fiche du modèle le prompt qui a marché.
+
 ## Carte du projet
 
 @docs/README.md

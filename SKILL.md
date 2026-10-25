@@ -233,6 +233,55 @@ Un produit vendu ne doit contenir que des choses qu'on a le droit de publier :
 - les crédits du produit sont tirés de ce fichier ;
 - aucune marque, aucun logo ni nom de produit d'autrui sans en avoir le droit.
 
+## Génération par IA
+
+Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleur quand on parle au modèle comme son éditeur le conseille. Chaque modèle a sa façon : phrases ou mots-clés, prompt négatif compris ou ignoré, rôle des images de référence. Les modèles changent tous les quelques mois, et certains disparaissent.
+
+**Avant de générer**
+- Lire la fiche du modèle dans `docs/generation-ia/modeles/`. Si elle manque ou a plus de 60 jours, chercher les guides officiels de l'éditeur (recherche web, puis lecture des pages ; beaucoup de docs ont un `llms.txt`), puis écrire la fiche d'après `_modele.md`, avec ses sources et la date. Le hook `garde-generation-ia` refuse la génération sinon.
+- Tout contenu destiné au produit part de la bible de style `docs/generation-ia/style.md`. Elle est écrite avec l'utilisateur pendant la phase d'identité visuelle, avant la première génération pour le produit. Les essais d'exploration peuvent la précéder.
+- Estimer le coût quand l'outil le permet, et le dire à l'utilisateur avant une série.
+
+**Écrire le prompt**
+- Décrire ce qu'on voit, le sujet d'abord, puis l'action, le lieu, la composition, la lumière et le style. Pas de mots creux comme « masterpiece » ou « 8k ».
+- Formuler en positif : plusieurs modèles ignorent les prompts négatifs. « Fond uni gris » plutôt que « sans décor ».
+- Le texte à afficher entre guillemets, avec sa police et sa position, puis relu sur l'image.
+- Les couleurs en hexadécimal, rattachées à un objet.
+- Court d'abord, un changement à la fois. Les brouillons en basse qualité, la version finale en haute.
+- Pour retoucher : « ne change que X, garde tout le reste ».
+- Aucun nom d'artiste, de marque ou de personnage protégé.
+- Le prompt qui a marché, avec ses réglages et sa graine, va dans la fiche du modèle.
+
+**Des contenus cohérents, dans l'ordre**
+1. La bible de style : palette en hexadécimal, lumière, matières, cadrage, ce qu'on évite, et un bloc de style commun ajouté à chaque prompt. Le sujet varie, le style non.
+2. Trois à cinq images ancres validées par l'utilisateur, passées en références à chaque génération, avec le rôle de chacune (style, personnage, décor). Le nombre de références admis dépend du modèle.
+3. En gros volume, un style entraîné : un LoRA sur 20 à 40 images légendées, ou le style entraîné d'un service (Scenario, Recraft, Krea).
+4. Une graine fixe aide à comparer deux prompts, mais ne remplace ni les références ni un style entraîné.
+5. Pour un personnage : une planche (face, profil, dos, pose en A ou en T, fond neutre), puis le modèle 3D à partir de plusieurs vues.
+6. Pour une texture : « seamless tileable », vue de dessus, lumière diffuse, et le raccord vérifié dans le moteur.
+7. Pour des icônes ou une interface : du vectoriel (SVG) ou un fond transparent, avec la palette imposée.
+8. Toujours finir à la main : détourage, agrandissement, retouche, puis un essai en situation, dans le produit.
+
+**Outils, par besoin** (état au 25/10/2026 ; la fiche du modèle fait foi)
+
+| Besoin | Point de départ | Guide officiel |
+|---|---|---|
+| Image et retouche par instructions | GPT Image, Nano Banana (Gemini), FLUX | [OpenAI](https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide), [Google](https://ai.google.dev/gemini-api/docs/image-generation), [Black Forest Labs](https://docs.bfl.ai/guides/prompting_guide_flux2) |
+| Texte dans l'image, logo | Ideogram | [Ideogram](https://docs.ideogram.ai/prompting/prompting.md) |
+| Vectoriel, icônes, interface | Recraft | [Recraft](https://www.recraft.ai/docs/api-reference/models/recraft-v4) |
+| Recherche de direction artistique | Midjourney (références de style, moodboards) | [Midjourney](https://updates.midjourney.com/) |
+| Vidéo | Kling, Veo (Gemini), Seedance, Hailuo, Runway | [Kling](https://kling.ai/quickstart/klingai-video-3-model-user-guide), [Google](https://ai.google.dev/gemini-api/docs/video), [MiniMax](https://platform.minimax.io/docs/guides/video-generation), [Runway](https://docs.dev.runwayml.com/guides/models/) |
+| Modèle 3D | Meshy, Tripo, Rodin ; Hunyuan3D en local, licence restreinte | [Meshy](https://docs.meshy.ai/en/webapp/text-to-3d), [Tripo par Scenario](https://help.scenario.com/articles/4692888910-tripo-family-the-complete-guide) |
+| Voix, bruitages | ElevenLabs | [voix](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices), [bruitages](https://elevenlabs.io/docs/overview/capabilities/sound-effects) |
+| Musique | Suno, Lyria (Gemini) | [Suno](https://help.suno.com/en/articles/13924481), [Google](https://ai.google.dev/gemini-api/docs/interactions/music-generation) |
+| Un style maison en volume | Scenario, Krea, ComfyUI en local | [Scenario](https://docs.scenario.com/), [Krea](https://www.krea.ai/docs/), [ComfyUI](https://docs.comfy.org/) |
+
+**Droits**
+- Vérifier, pour chaque modèle et chaque formule d'abonnement : usage commercial, crédit obligatoire, territoires, seuils de revenus. Au 25/10/2026, par exemple : les formules gratuites d'ElevenLabs et de Suno sont non commerciales, celle de Meshy oblige à créditer (CC BY 4.0), et la licence de Hunyuan3D 2.1 exclut l'Union européenne, le Royaume-Uni et la Corée du Sud.
+- Chaque contenu généré qui entre dans le produit a sa ligne dans `docs/licences.md`, avec le modèle, la formule et la date dans la colonne « Généré par IA ».
+- Steam demande de déclarer les contenus générés par IA dans son questionnaire de contenu, avant la soumission, et l'affiche sur la page du jeu. Un contenu généré pendant le jeu demande aussi de décrire ses garde-fous.
+- Une création purement IA peut ne pas être protégée par le droit d'auteur, aux États-Unis au moins. Ce qui fait l'identité du produit garde une vraie part humaine.
+
 ## Documents
 
 | Document | Rôle | Règle |
@@ -243,6 +292,7 @@ Un produit vendu ne doit contenir que des choses qu'on a le droit de publier :
 | `docs/feuille-de-route.md` | Les étapes jusqu'au lancement, une case par session, regroupées par phase, et « Où on en est » | Case cochée à la fin de sa session. Les phases lointaines restent en grands blocs, découpées en sessions juste avant de les commencer |
 | `docs/memoire/` | Mémoire de Claude : index `MEMORY.md`, une fiche par sujet | Voir « Mémoire » |
 | `docs/licences.md` | Licence de chaque contenu externe ou généré par IA | Une ligne ajoutée dans la même session que le contenu |
+| `docs/generation-ia/` | La bible de style (`style.md`) et une fiche par modèle d'IA générative (`modeles/`) | Voir « Génération par IA » |
 | Document de conception | Le design, source de vérité | Document vivant : mis à jour à chaque fonctionnalité ou décision, compact, ce qui est abandonné est retiré |
 
 Si le document de conception est un Claude Doc, chaque passe de modifs est marquée : surlignage dans le texte, cellules bleues `#e7f1fb` dans les tableaux. Les marques précédentes sont retirées quand l'utilisateur dit avoir relu.
@@ -281,6 +331,7 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - `rappel-clear.ps1` (Stop) affiche un message à l'utilisateur après un nouveau commit, et quand le contexte franchit 150k, 250k, 350k tokens… Les seuils sont en tête du script.
 - `garde-tests.ps1` (Stop et `pre-commit`) retient l'empreinte des fichiers qui ont passé `verifier.ps1`. Les docs et les `.md` n'en font pas partie. Il ne fait rien tant que le projet n'a pas de `verifier.ps1`. Il renvoie Claude au travail une seule fois par tour, pour ne pas boucler.
 - `garde-secrets.ps1` (`pre-commit`, avant `garde-tests`) bloque un commit qui ajoute un fichier de clé (`.env`, `.pem`, `.pfx`, `.keystore`…) ou une ligne qui ressemble à un secret : clé privée, jeton connu, mot de passe écrit en clair. Il montre l'endroit, jamais le secret. Un faux positif reconnu porte le marqueur `garde-secrets: ignorer` sur sa ligne, avec l'accord de l'utilisateur.
+- `garde-generation-ia.ps1` (PreToolUse, sur les outils MCP qui génèrent) refuse une génération d'image, de vidéo, de modèle 3D ou de son tant que le modèle appelé n'a pas de fiche à jour dans `docs/generation-ia/modeles/`. Une estimation de coût et la reprise d'un travail lancé passent. Voir « Génération par IA ».
 - Les hooks git vivent dans `.githooks/`, versionnés, avec des fins de ligne LF (règle dans `.gitattributes`). `preparer-projet.ps1` les active, et Git LFS y écrit aussi les siens.
 
 ## Selon le type de projet
@@ -321,7 +372,7 @@ Les règles ci-dessus valent pour tous les projets de code. Voici ce qui change 
 
 0. Fondations : git, techno, CLAUDE.md, MCP, skills et hooks.
 1. Prototype : le cœur du produit, utilisable de bout en bout en version brute (gray-box pour un jeu), sur une base réseau si le produit en a besoin.
-2. Identité visuelle et page de présentation, en parallèle : page Steam « Coming Soon », fiche de boutique, site.
+2. Identité visuelle, avec la bible de style des IA génératives, et page de présentation, en parallèle : page Steam « Coming Soon », fiche de boutique, site.
 3. Tranche verticale : un parcours complet à la qualité finale, comme un niveau de jeu ou une fonctionnalité phare.
 4. Bêta ou démo : Steam Next Fest, TestFlight, bêta fermée.
 5. Itérations de contenu et de fonctionnalités, avec un accès anticipé possible.

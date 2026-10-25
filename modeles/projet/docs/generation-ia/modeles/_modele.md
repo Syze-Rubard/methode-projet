@@ -1,0 +1,33 @@
+# <Nom du modèle> (`<identifiant exact passé à l'outil>`)
+
+Vérifiée le : AAAA-MM-JJ
+
+Fiche à copier pour chaque modèle d'IA générative qu'on utilise. Le fichier porte l'identifiant du modèle en minuscules, avec des tirets à la place des autres signes : `gpt_image_2_5` donne `gpt-image-2-5.md`. Le hook `garde-generation-ia` refuse une génération si la fiche manque ou si sa date a plus de 60 jours.
+
+## Sources
+
+Les guides officiels de l'éditeur lus pour cette fiche, avec leur lien. Un article de blog ne remplace pas la doc officielle.
+
+- <titre de la page> : <lien>
+
+## Comment lui parler
+
+- **Forme du prompt :** <phrases complètes ou mots-clés, ordre conseillé, longueur idéale, langue>
+- **Texte dans l'image :** <entre guillemets ? fiable ou non ?>
+- **Images de référence :** <combien, à quoi elles servent (personnage, style, composition), comment les citer dans le prompt>
+- **Paramètres utiles :** <format, résolution, graine, qualité, durée, mouvement de caméra…>
+- **Ce qu'il ne comprend pas :** <prompt négatif, poids entre parenthèses, etc.>
+
+## Forces et faiblesses
+
+- **Bon pour :** <…>
+- **À éviter pour :** <…>
+- **Coût :** <crédits par génération, d'après l'estimation de l'outil>
+
+## Prompt qui a marché
+
+Le meilleur prompt obtenu sur ce projet, avec ses réglages et sa graine, pour repartir de lui.
+
+```
+<prompt>
+```
