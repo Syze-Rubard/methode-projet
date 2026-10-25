@@ -6,7 +6,8 @@ Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut
 
 Un modèle d'IA générative donne de bien meilleurs résultats quand on lui parle comme son éditeur le conseille, et chaque modèle a sa façon. L'utilisateur veut que Claude se renseigne toujours avant de générer :
 - le hook `garde-generation-ia.ps1` (PreToolUse) refuse une génération d'image, de vidéo, de modèle 3D ou de son tant que le modèle appelé n'a pas de fiche datée de moins de 60 jours dans `docs/generation-ia/modeles/`. Son message dit comment se renseigner et quoi écrire. Une estimation de coût et la reprise d'un travail passent ;
-- le modèle de fiche `_modele.md` : sources officielles, forme de prompt, images de référence, paramètres, forces et faiblesses, prompt qui a marché ;
+- le modèle de fiche `_modele.md` : sources, forme de prompt, images de référence, paramètres, astuces de la communauté, forces et faiblesses, prompt qui a marché ;
+- on se renseigne dans les guides officiels, puis dans ceux de la communauté (Reddit, Discord, tutoriels) : l'utilisateur sait qu'on y trouve souvent les meilleures astuces. Chacune est notée avec sa source et son résultat une fois essayée ;
 - la bible de style `docs/generation-ia/style.md`, pour que les contenus d'un même produit se ressemblent ;
 - une section « Génération par IA » dans le skill : les réflexes, la façon d'obtenir des contenus cohérents, les outils, les droits ;
 - le modèle de CLAUDE.md et la carte en parlent.

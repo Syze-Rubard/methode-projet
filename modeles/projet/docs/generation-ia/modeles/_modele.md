@@ -6,8 +6,12 @@ Fiche à copier pour chaque modèle d'IA générative qu'on utilise. Le fichier 
 
 ## Sources
 
-Les guides officiels de l'éditeur lus pour cette fiche, avec leur lien. Un article de blog ne remplace pas la doc officielle.
+Les pages lues pour cette fiche, avec leur lien : d'abord les guides officiels de l'éditeur, puis les meilleurs guides de la communauté, qui ont souvent les astuces que la doc ne donne pas. En cas de désaccord, la doc officielle fait foi jusqu'à ce qu'un essai sur le projet donne raison à la communauté.
 
+**Officielles**
+- <titre de la page> : <lien>
+
+**Communauté** (Reddit, Discord, tutoriels de créateurs reconnus)
 - <titre de la page> : <lien>
 
 ## Comment lui parler
@@ -17,6 +21,12 @@ Les guides officiels de l'éditeur lus pour cette fiche, avec leur lien. Un arti
 - **Images de référence :** <combien, à quoi elles servent (personnage, style, composition), comment les citer dans le prompt>
 - **Paramètres utiles :** <format, résolution, graine, qualité, durée, mouvement de caméra…>
 - **Ce qu'il ne comprend pas :** <prompt négatif, poids entre parenthèses, etc.>
+
+## Astuces de la communauté
+
+Une astuce par ligne, avec sa source, et son résultat une fois essayée sur le projet.
+
+- <astuce> (<source>) : <pas encore essayée / marche / ne marche pas>
 
 ## Forces et faiblesses
 

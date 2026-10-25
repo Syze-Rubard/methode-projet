@@ -238,7 +238,10 @@ Un produit vendu ne doit contenir que des choses qu'on a le droit de publier :
 Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleur quand on parle au modèle comme son éditeur le conseille. Chaque modèle a sa façon : phrases ou mots-clés, prompt négatif compris ou ignoré, rôle des images de référence. Les modèles changent tous les quelques mois, et certains disparaissent.
 
 **Avant de générer**
-- Lire la fiche du modèle dans `docs/generation-ia/modeles/`. Si elle manque ou a plus de 60 jours, chercher les guides officiels de l'éditeur (recherche web, puis lecture des pages ; beaucoup de docs ont un `llms.txt`), puis écrire la fiche d'après `_modele.md`, avec ses sources et la date. Le hook `garde-generation-ia` refuse la génération sinon.
+- Lire la fiche du modèle dans `docs/generation-ia/modeles/`. Si elle manque ou a plus de 60 jours, se renseigner (recherche web, puis lecture des pages), puis écrire la fiche d'après `_modele.md`, avec ses sources et la date. Le hook `garde-generation-ia` refuse la génération sinon.
+  - D'abord les guides officiels de l'éditeur. Beaucoup de docs ont un `llms.txt`.
+  - Puis les guides de la communauté : le subreddit du modèle, son Discord, les tutoriels de créateurs reconnus. Ils ont souvent les meilleures astuces, que la doc ne donne pas.
+  - Chaque astuce de la communauté entre dans la fiche avec sa source, et son résultat une fois essayée sur le projet. En cas de désaccord, la doc officielle fait foi jusqu'à ce qu'un essai donne raison à la communauté.
 - Tout contenu destiné au produit part de la bible de style `docs/generation-ia/style.md`. Elle est écrite avec l'utilisateur pendant la phase d'identité visuelle, avant la première génération pour le produit. Les essais d'exploration peuvent la précéder.
 - Estimer le coût quand l'outil le permet, et le dire à l'utilisateur avant une série.
 
