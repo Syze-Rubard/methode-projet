@@ -2,6 +2,17 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : tout type de projet de code
+
+La méthode était écrite autour d'un jeu Steam. L'utilisateur la veut aussi utile pour un jeu mobile, une appli, un logiciel ou tout autre projet de code :
+- les règles générales sont réécrites sans vocabulaire de jeu : appareil minimal, version livrée, code chaud « à chaque image, à chaque requête ou pour chaque élément », données enregistrées de l'utilisateur ;
+- une section « Selon le type de projet » donne, pour un jeu, une appli mobile, un logiciel de bureau, un site ou service web, et un outil ou une bibliothèque, ce qu'on mesure, ce qu'on teste, la sécurité propre et la publication ;
+- les phases deviennent celles de tout projet, avec une phase de suivi après le lancement ;
+- le démarrage demande le type du projet, et `architecture.md` le note ;
+- une techno sans modèle se crée à partir de `base` et du modèle officiel `github/gitignore` ;
+- `verifier.ps1` donne des exemples pour .NET, le web, Python et Android ;
+- le registre des licences couvre aussi les dépendances de code (licences copyleft).
+
 ## 2026-10-25 : sécurité, sauvegarde, licences, et juste ce qu'il faut
 
 L'utilisateur a demandé la sécurité, et les autres points importants d'un projet pro :

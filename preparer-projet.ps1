@@ -97,7 +97,7 @@ function Initialize-Git([string]$ProjectDir) {
     # Set before Git LFS, so LFS writes its hooks next to the versioned pre-commit hook.
     if (Test-Path -LiteralPath (Join-Path $ProjectDir '.githooks')) {
         Invoke-Git $ProjectDir @('config', 'core.hooksPath', '.githooks')
-        Write-Status 'ok' 'hooks git du projet actifs (.githooks : vérification avant chaque commit)'
+        Write-Status 'ok' 'hooks git du projet actifs (.githooks : secrets et vérification avant chaque commit)'
     }
     $attributes = Join-Path $ProjectDir '.gitattributes'
     if ((Test-Path -LiteralPath $attributes) -and (Select-String -Quiet -LiteralPath $attributes -Pattern 'filter=lfs')) {

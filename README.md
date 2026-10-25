@@ -1,6 +1,6 @@
 # Méthode projet
 
-Une façon de travailler avec Claude Code, pareille dans tous les projets : des docs tenues à jour, une mémoire rangée dans le projet, des hooks, et git avec une sauvegarde sur GitHub. Claude lit la méthode complète dans `SKILL.md`.
+Une façon de travailler avec Claude Code, pareille dans tous les projets de code (jeu, appli mobile, logiciel, site web, outil) : des docs tenues à jour, une mémoire rangée dans le projet, des hooks, et git avec une sauvegarde sur GitHub. Claude lit la méthode complète dans `SKILL.md`.
 
 ## Installer sur un PC
 

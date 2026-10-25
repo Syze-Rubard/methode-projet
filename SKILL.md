@@ -1,20 +1,20 @@
 ---
 name: methode-projet
-description: Méthode de travail pro avec Claude Code, commune à tous les projets de l'utilisateur. Structure de doc (CLAUDE.md, carte du projet, architecture, mémoire versionnée dans le projet), une fonctionnalité par session, checklist de fin de tâche, gestion du contexte (/clear, compaction), hooks et git. À utiliser pour démarrer un nouveau projet, remettre de l'ordre dans un projet existant, vérifier qu'un projet suit la méthode, ou améliorer la méthode elle-même.
+description: Méthode de travail pro avec Claude Code, commune à tous les projets de code de l'utilisateur, quel que soit leur type (jeu PC, console ou mobile, appli mobile, logiciel de bureau, site ou service web, outil en ligne de commande, bibliothèque). Structure de doc (CLAUDE.md, carte du projet, architecture, mémoire versionnée dans le projet), une fonctionnalité par session, checklist de fin de tâche, gestion du contexte (/clear, compaction), hooks et git. À utiliser pour démarrer un nouveau projet, remettre de l'ordre dans un projet existant, vérifier qu'un projet suit la méthode, ou améliorer la méthode elle-même.
 ---
 
 # Méthode projet
 
-Une méthode pour mener un gros projet avec Claude Code sans perdre en qualité ni en mémoire. Elle tient en cinq idées :
+Une méthode pour mener un gros projet de code avec Claude Code sans perdre en qualité ni en mémoire, que ce soit un jeu, une appli mobile, un logiciel, un site web ou un outil. Les règles valent pour tous ; ce qui change d'un type à l'autre est dans « Selon le type de projet ». Elle tient en cinq idées :
 1. **Tout ce qui compte est écrit sur le disque.** Une session neuve ne perd rien, donc on repart de zéro à chaque fonctionnalité.
 2. **Un sujet par document, sans doublon.** Chaque info a une seule place, et une carte dit laquelle.
 3. **Petit bout par petit bout.** Une fonctionnalité par session, testée et commitée avant la suivante.
 4. **Automatiser plutôt que se fier aux consignes.** Ce qui doit arriver à coup sûr passe par un hook ou un réglage.
-5. **Juste ce qu'il faut, au bon moment.** Chaque outil se met en place quand le premier code en a besoin, pas avant : le vérificateur avec le premier code, les tests de performance avec la première scène jouable, les tests réseau avec la coop. Une règle qui coûte plus qu'elle ne rapporte est signalée à l'utilisateur.
+5. **Juste ce qu'il faut, au bon moment.** Chaque outil se met en place quand le premier code en a besoin, pas avant : le vérificateur avec le premier code, les tests de performance avec le premier écran utilisable, les tests réseau avec le premier échange réseau. Une règle qui coûte plus qu'elle ne rapporte est signalée à l'utilisateur.
 
 ## Les scripts
 
-Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powershell -NoProfile -ExecutionPolicy Bypass -File "<dossier du skill>\<script>.ps1"`. Ils ne détruisent rien et se relancent sans risque. Chaque ligne de leur sortie commence par un état : `[ok]`, `[créé]`, `[installé]`, `[réglé]`, `[à faire]` ou `[à remplir]`.
+Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powershell -NoProfile -ExecutionPolicy Bypass -File "<dossier du skill>\<script>.ps1"`. Ils ne détruisent rien et se relancent sans risque. Les scripts et les hooks tournent sous Windows (PowerShell 5.1) : sur Mac ou Linux, il faut d'abord les porter. Chaque ligne de leur sortie commence par un état : `[ok]`, `[créé]`, `[installé]`, `[réglé]`, `[à faire]` ou `[à remplir]`.
 
 - **`preparer-pc.ps1`**, une fois par PC :
   - il installe avec winget ce qui manque (git, Git LFS, GitHub CLI) et active Git LFS ;
@@ -26,7 +26,7 @@ Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powers
   - **compaction** : `/autocompact 300k`, que l'utilisateur tape lui-même.
 
   Relancer le script jusqu'à ce qu'il ne reste rien à faire.
-- **`preparer-projet.ps1 -Chemin <dossier> [-Nom <nom>] [-Techno base|unity]`**, pour chaque projet et sur chaque PC :
+- **`preparer-projet.ps1 -Chemin <dossier> [-Nom <nom>] [-Techno <techno>]`**, pour chaque projet et sur chaque PC. Les technos disponibles sont les dossiers de `modeles/techno/` ; `base` convient à toutes en attendant la leur :
   - il copie les modèles sans écraser un fichier existant ;
   - il dirige la mémoire de Claude Code vers `docs/memoire`, et corrige le chemin si le disque a changé de lettre ;
   - il initialise git, avec LFS si la techno en a besoin ;
@@ -39,10 +39,10 @@ Les modèles :
 
 ## Démarrer un projet
 
-1. Demander à l'utilisateur le nom du projet, son pitch en une phrase, la techno, et le document de conception (GDD, cahier des charges…) s'il existe.
+1. Demander à l'utilisateur le nom du projet, son pitch en une phrase, son type (voir « Selon le type de projet »), la techno, et le document de conception (GDD, cahier des charges…) s'il existe.
 2. Lancer `preparer-pc.ps1`. Si tout est `[ok]`, passer à la suite.
-3. Lancer `preparer-projet.ps1` sur le dossier du projet.
-4. Remplir chaque `{{...}}` listé, retirer ce qui ne sert pas, et compléter la fiche projet de la mémoire et la section « Outils du PC » de la carte (moteur, logiciels, MCP).
+3. Si la techno n'a pas encore de modèle dans `modeles/techno/`, le créer d'abord (voir « Améliorer la méthode »). Puis lancer `preparer-projet.ps1` sur le dossier du projet, avec `-Techno`.
+4. Remplir chaque `{{...}}` listé, retirer ce qui ne sert pas, et compléter la fiche projet de la mémoire et la section « Outils du PC » de la carte (moteur, SDK, logiciels, MCP). Les sections « Tests et qualité », « Performance » et « Sécurité » de `architecture.md` se remplissent d'après le type du projet.
 5. Faire un premier commit, puis sauvegarder hors du disque : `gh repo create <nom> --private --source . --push`.
 6. Dire à l'utilisateur que les hooks et la mémoire prennent effet à la session suivante.
 
@@ -105,10 +105,12 @@ Le but est un projet sans bug. Chaque moyen ci-dessous attrape des bugs que les 
 3. La correction.
 4. Un commit qui ferme l'issue (`Fixes #N`).
 
-**Pour un jeu, en plus :**
-- une graine pour tout l'aléatoire, notée dans chaque rapport de bug et dans chaque log : tout bug se rejoue à l'identique ;
-- des tests de jeu automatiques, et un test de fumée qui charge chaque scène et joue quelques secondes sans erreur ;
-- dans les builds, un log et un rapport de crash qui notent la version et la graine.
+**Pour tout produit livré :**
+- tout l'aléatoire passe par une graine, notée dans chaque rapport de bug et dans chaque log : tout bug se rejoue à l'identique ;
+- un test de fumée lance le produit et parcourt chaque écran sans erreur ;
+- la version livrée écrit un log et un rapport de crash, avec sa version.
+
+Les tests propres à chaque type de projet sont dans « Selon le type de projet ».
 
 ## Logs : retrouver un bug vite
 
@@ -121,21 +123,21 @@ Quand un bug arrive, les logs doivent dire ce qui s'est passé, où et pourquoi,
 - le niveau (`Trace`, `Debug`, `Info`, `Warning`, `Error`, `Fatal`) ;
 - la catégorie, c'est-à-dire le module ;
 - le message ;
-- le contexte en `clé=valeur` : version, session, et pour un jeu la graine, l'image et le joueur.
+- le contexte en `clé=valeur` : version, session, et ce qui situe l'événement. Pour un jeu, c'est la graine, l'image et le joueur ; pour un service web, la requête et l'utilisateur.
 
 Les fichiers sont en JSON, une ligne par entrée, pour que Claude les filtre en une commande. La console garde une version lisible.
 
 **Ce qu'on loggue :**
 - **les changements d'état**, chacun avec l'état d'avant et l'état d'après ;
-- **les décisions**, avec leur pourquoi : « cheat activé niveau 3 car… » ;
+- **les décisions**, avec leur pourquoi : « remise refusée car… », « ennemi passé en fuite car… » ;
 - **les entrées et sorties des modules**, et chaque appel externe : réseau, fichiers, sauvegarde ;
 - **les erreurs**, chacune avec tout son contexte et la pile d'appels ;
 - **la durée des opérations lentes.**
 
 **On suit un événement d'un bout à l'autre** grâce à un identifiant commun :
 - la session ;
-- la partie ;
-- le message réseau. Les logs de plusieurs PC se fusionnent alors en une seule chronologie.
+- la partie, la requête ou la transaction ;
+- le message réseau. Les logs de plusieurs machines se fusionnent alors en une seule chronologie.
 
 **Les fichiers :**
 - un fichier par session, à un emplacement noté dans `docs/architecture.md` ;
@@ -144,7 +146,7 @@ Les fichiers sont en JSON, une ligne par entrée, pour que Claude les filtre en 
 
 **Pour les performances :**
 - le message n'est construit que si son niveau est actif ;
-- ce qui se répète à chaque image passe au niveau `Trace`, activable par catégorie.
+- ce qui se répète à chaque image ou à chaque requête passe au niveau `Trace`, activable par catégorie.
 
 **Jamais de secret ni de donnée personnelle** dans un log : mot de passe, jeton, e-mail.
 
@@ -157,15 +159,13 @@ Les fichiers sont en JSON, une ligne par entrée, pour que Claude les filtre en 
 
 Rien de ce qu'on ajoute ne doit faire ramer le programme. Un ralentissement est un bug comme un autre : il a son issue, son test et sa correction.
 
-**Des budgets chiffrés**, notés dans `docs/architecture.md` et décidés avec l'utilisateur. Pour un jeu :
-- le temps par image sur la configuration minimale visée, en médiane et sur le 1 % des pires images (les saccades comptent) ;
-- le même sur le PC de développement, plus serré : c'est lui que les tests de chaque commit vérifient ;
-- aucune allocation mémoire par image en jeu ;
-- la mémoire maximale et le temps de chargement.
+**Des budgets chiffrés**, notés dans `docs/architecture.md` et décidés avec l'utilisateur. Ce qu'on mesure dépend du type de projet (voir « Selon le type de projet ») : la réactivité (temps par image, temps de réponse), le démarrage ou le chargement, la mémoire, et les allocations dans le code chaud. Chaque budget a deux valeurs :
+- sur l'appareil minimal visé, en médiane et sur le 1 % des pires cas (les saccades comptent) ;
+- sur le PC de développement, plus serrée : c'est elle que les tests de chaque commit vérifient.
 
 **Mesurer, pas deviner :**
 - on profile avant d'optimiser, et on optimise là où la mesure le montre ;
-- les vrais chiffres se prennent dans un build, sur la configuration minimale : l'éditeur et un PC puissant les faussent.
+- les vrais chiffres se prennent sur la version livrée (build de production), sur l'appareil minimal : l'éditeur, le mode debug et un PC puissant les faussent.
 
 **Tests de performance automatiques**, dans `outils/verifier.ps1`, après les autres tests :
 - des scénarios de pire cas, joués quelques secondes chacun ;
@@ -177,16 +177,17 @@ Rien de ce qu'on ajoute ne doit faire ramer le programme. Un ralentissement est 
 - le plan dit ce qu'elle coûte en performance ;
 - le diff relu cherche aussi les coûts cachés : allocations, recherches répétées, boucles sur tout le monde.
 
-**À chaque jalon**, un build passé au profiler sur la configuration minimale, avec les chiffres notés dans `architecture.md`.
+**À chaque jalon**, la version livrée passée au profiler sur l'appareil minimal, avec les chiffres notés dans `architecture.md`.
 
-**Du code générique et rapide à la fois :** les petites fonctions génériques restent la règle. Dans le code chaud, c'est-à-dire ce qui tourne à chaque image ou pour chaque entité :
+**Du code générique et rapide à la fois :** les petites fonctions génériques restent la règle. Dans le code chaud, c'est-à-dire ce qui tourne à chaque image, à chaque requête ou pour chaque élément d'une longue liste :
 - aucune allocation ;
 - des références gardées en cache ;
 - des pools d'objets au lieu de créer et détruire ;
-- des événements plutôt que des vérifications à chaque image ;
-- des structures de données adaptées au volume.
+- des événements plutôt que des vérifications répétées ;
+- des structures de données adaptées au volume ;
+- rien de lent sur le fil de l'interface : disque, réseau et gros calculs passent en tâche de fond.
 
-**En développement**, un affichage permanent montre les images par seconde, le temps par image, les allocations et la mémoire.
+**En développement**, un affichage permanent ou un tableau de bord montre les mesures clés : images par seconde et allocations pour un jeu, temps de réponse pour un service.
 
 ## Sécurité
 
@@ -194,7 +195,7 @@ Rien de secret ne sort du PC, et rien de ce qui entre n'est cru sur parole.
 
 **Les secrets** (mots de passe, clés d'API, jetons, certificats, clés de signature) :
 - jamais dans le dépôt, même privé : ils vivent dans un fichier ignoré par git, ou dans le coffre du service (les secrets de GitHub Actions) ;
-- jamais dans un build livré : un joueur peut lire tout ce qu'il contient ;
+- jamais dans ce qui est livré (jeu, appli, page web) : un utilisateur peut lire tout ce qu'il contient ;
 - le hook git `pre-commit` bloque un commit qui contient un fichier de clé ou un secret reconnaissable ;
 - un secret qui a fuité est révoqué et remplacé tout de suite : l'effacer de l'historique ne suffit pas ;
 - Claude ne saisit jamais un secret : l'utilisateur le fait lui-même.
@@ -225,7 +226,8 @@ Rien de secret ne sort du PC, et rien de ce qui entre n'est cru sur parole.
 Un produit vendu ne doit contenir que des choses qu'on a le droit de publier :
 - `docs/licences.md` liste chaque contenu externe (asset, police, son, musique, code) avec sa source, sa licence et l'attribution demandée. Sa ligne est ajoutée dans la même session que lui ;
 - un contenu sans licence claire n'entre pas dans le projet ;
-- les contenus générés par IA y sont notés aussi : Steam demande de les déclarer ;
+- les dépendances de code y sont notées aussi : une licence copyleft (GPL) peut obliger à publier son propre code ;
+- les contenus générés par IA aussi : des boutiques, comme Steam, demandent de les déclarer ;
 - les crédits du produit sont tirés de ce fichier ;
 - aucune marque, aucun logo ni nom de produit d'autrui sans en avoir le droit.
 
@@ -265,7 +267,7 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - Avant d'écrire du code, chercher une brique existante à réutiliser ou à généraliser.
 - Rapide dans le code chaud : voir « Performance ».
 - Aucun texte visible en dur : tout passe par des tables de traduction dès le premier écran, même si le produit sort en une seule langue. Ajouter une langue après coup coûte très cher.
-- Les sauvegardes du joueur portent un numéro de version, avec une migration depuis chaque version précédente : une mise à jour ne casse jamais une partie en cours.
+- Les données enregistrées de l'utilisateur (sauvegarde de jeu, base locale, préférences) portent un numéro de version, avec une migration depuis chaque version précédente : une mise à jour ne casse jamais ses données.
 - « Fini » : `verifier.ps1` vert (tests de performance compris), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
 
 ## Hooks
@@ -278,20 +280,55 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - `garde-secrets.ps1` (`pre-commit`, avant `garde-tests`) bloque un commit qui ajoute un fichier de clé (`.env`, `.pem`, `.pfx`, `.keystore`…) ou une ligne qui ressemble à un secret : clé privée, jeton connu, mot de passe écrit en clair. Il montre l'endroit, jamais le secret. Un faux positif reconnu porte le marqueur `garde-secrets: ignorer` sur sa ligne, avec l'accord de l'utilisateur.
 - Les hooks git vivent dans `.githooks/`, versionnés, avec des fins de ligne LF (règle dans `.gitattributes`). `preparer-projet.ps1` les active, et Git LFS y écrit aussi les siens.
 
-## Phases d'un jeu vidéo (exemple Steam)
+## Selon le type de projet
 
-0. Fondations : git, moteur, CLAUDE.md, MCP, skills et hooks.
-1. Prototype gray-box jouable, sur une base réseau si le jeu a de la coop.
-2. Direction artistique et page Steam « Coming Soon », en parallèle.
-3. Tranche verticale : un niveau complet, à la qualité finale.
-4. Démo et Steam Next Fest.
-5. Sprints de contenu, accès anticipé possible.
+Les règles ci-dessus valent pour tous les projets de code. Voici ce qui change d'un type à l'autre. Au démarrage, Claude reporte les choix du projet dans les sections « Tests et qualité », « Performance » et « Sécurité » de `architecture.md`.
+
+**Jeu (PC, console ou mobile)**
+- Performance : temps par image, aucune allocation par image en jeu, chargements, mémoire. Sur mobile, aussi la chauffe, la batterie et la taille du téléchargement.
+- Tests : tests de jeu automatiques, et un test de fumée qui charge chaque scène et joue quelques secondes.
+- Sécurité : en réseau, l'hôte fait autorité ; les sauvegardes sont validées au chargement.
+- Publication : Steam (page « Coming Soon » tôt, Next Fest, déclaration des contenus IA), App Store et Google Play, ou les programmes de développeur des consoles.
+
+**Appli mobile**
+- Performance : démarrage à froid, défilement fluide, mémoire, batterie, données consommées, taille de l'appli.
+- Tests : tests d'interface sur émulateur et sur un vrai téléphone d'entrée de gamme, et un test de fumée qui ouvre chaque écran.
+- Sécurité : jetons et secrets dans le coffre du système (Keychain, Keystore), jamais en clair. Le moins de permissions possible, demandées au moment où elles servent. HTTPS partout.
+- Publication : App Store et Google Play, avec leur fiche de confidentialité. Bêta par TestFlight et par les tests fermés de Google Play. Construire pour iOS demande un Mac ou un service de build en ligne.
+
+**Logiciel de bureau**
+- Performance : démarrage, interface qui répond en moins de 100 ms, mémoire au repos et en charge.
+- Tests : tests d'interface automatisés, et un test de fumée qui lance le programme et ouvre chaque fenêtre.
+- Sécurité : installeur et exécutable signés, mises à jour par un canal signé, fichiers ouverts validés.
+- Publication : un installeur, une boutique (Microsoft Store, Steam), ou un gestionnaire de paquets (winget).
+
+**Site ou service web**
+- Performance : chargement des pages (Core Web Vitals), temps de réponse au 95e centile, poids des pages, requêtes à la base de données.
+- Tests : tests d'API, tests de bout en bout dans un navigateur (Playwright), et un test de fumée après chaque déploiement.
+- Sécurité : les risques du Top 10 de l'OWASP (injections, authentification, droits d'accès, XSS, CSRF), mots de passe hachés, HTTPS. Pour les données personnelles, le RGPD : consentement, droits d'accès et d'effacement.
+- Publication : un environnement de test avant la production, des déploiements qu'on peut annuler, et des sauvegardes de la base vérifiées par une vraie restauration.
+
+**Outil en ligne de commande ou bibliothèque**
+- Performance : temps d'exécution et mémoire, sur une entrée type et sur une très grosse entrée ; des bancs d'essai pour une bibliothèque.
+- Tests : tests de l'API publique, et tests de bout en bout des commandes (entrées, sorties, codes de retour).
+- Sécurité : entrées et fichiers validés ; jamais de commande shell construite à partir d'une entrée.
+- Publication : un gestionnaire de paquets (NuGet, npm, PyPI…), des versions sémantiques et un journal des changements. L'API publique ne casse qu'à une version majeure.
+
+## Phases d'un projet
+
+0. Fondations : git, techno, CLAUDE.md, MCP, skills et hooks.
+1. Prototype : le cœur du produit, utilisable de bout en bout en version brute (gray-box pour un jeu), sur une base réseau si le produit en a besoin.
+2. Identité visuelle et page de présentation, en parallèle : page Steam « Coming Soon », fiche de boutique, site.
+3. Tranche verticale : un parcours complet à la qualité finale, comme un niveau de jeu ou une fonctionnalité phare.
+4. Bêta ou démo : Steam Next Fest, TestFlight, bêta fermée.
+5. Itérations de contenu et de fonctionnalités, avec un accès anticipé possible.
 6. Lancement.
+7. Suivi : correctifs, mises à jour et retours des utilisateurs.
 
 ## Améliorer la méthode
 
 La méthode vit dans le dossier de ce skill, un dépôt git que `preparer-pc.ps1` relie à `~/.claude/skills/methode-projet`. Quand une façon de travailler s'améliore sur un projet :
-1. modifier ce fichier, les scripts ou les modèles. Un nouveau fichier commun va dans `modeles/projet/`, une nouvelle techno dans `modeles/techno/<techno>/` ;
+1. modifier ce fichier, les scripts ou les modèles. Un nouveau fichier commun va dans `modeles/projet/`. Une nouvelle techno va dans `modeles/techno/<techno>/` : copier `base`, puis ajouter au `.gitignore` le modèle officiel de la techno (dépôt `github/gitignore`) et au `.gitattributes` ses fichiers lourds, suivis par Git LFS ;
 2. noter le changement et son pourquoi dans `CHANGELOG.md` ;
 3. commiter, et pousser si le dépôt a un remote.
 
