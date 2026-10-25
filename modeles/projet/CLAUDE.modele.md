@@ -20,7 +20,7 @@
 
 Une tâche n'est finie qu'après ces étapes :
 1. Mettre à jour chaque document concerné par le changement, d'après le tableau « Qui tient quoi à jour » de la carte.
-2. Commiter.
+2. Commiter, puis pousser vers GitHub.
 3. Si la fonctionnalité est terminée, dire à l'utilisateur que c'est le bon moment pour `/clear`. Le hook `rappel-clear` le lui rappelle aussi.
 
 ## Mémoire
