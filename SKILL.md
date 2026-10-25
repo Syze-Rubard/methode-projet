@@ -56,7 +56,8 @@ Les modèles :
 
 ## Partager la méthode
 
-- La méthode tient dans le dossier de ce skill. On la partage en dépôt GitHub privé, en ajoutant la personne comme collaboratrice, ou en copie du dossier.
+- La méthode tient dans le dossier de ce skill, dans un dépôt GitHub public : on la partage par son lien, https://github.com/Syze-Rubard/methode-projet, ou en copie du dossier. Les dépôts des projets, eux, restent privés.
+- Ce dépôt étant public, ses commits portent l'adresse anonyme de GitHub (`…@users.noreply.github.com`), jamais une vraie adresse e-mail.
 - La personne installe Claude Code, puis suit le `README.md` du dossier : il lui fait lancer `preparer-pc.ps1`.
 - Elle a sa propre identité git et son propre compte GitHub. Ses projets ont leur propre mémoire.
 

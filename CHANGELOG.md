@@ -2,6 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : dépôt public
+
+Pour qu'une personne récupère la méthode sans compte GitHub ni invitation :
+- le dépôt du skill devient public, et le `README.md` donne la commande `git clone` ;
+- son historique porte l'adresse anonyme de GitHub au lieu d'une vraie adresse e-mail, et ses prochains commits aussi ;
+- les dépôts des projets restent privés.
+
 ## 2026-10-25 : feuille de route
 
 Les phases disaient où va le projet, mais pas quelle session vient ensuite. RogueHack a gagné une feuille de route étape par étape, reprise ici pour tout projet :
