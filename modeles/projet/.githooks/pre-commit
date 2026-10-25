@@ -1,0 +1,3 @@
+#!/bin/sh
+# Blocks the commit when the project's checks fail (see .claude/hooks/garde-tests.ps1).
+exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/garde-tests.ps1 -AvantCommit

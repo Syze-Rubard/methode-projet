@@ -8,6 +8,12 @@
             "command": "powershell.exe",
             "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".claude/hooks/rappel-clear.ps1"],
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".claude/hooks/garde-tests.ps1"],
+            "timeout": 60
           }
         ]
       }

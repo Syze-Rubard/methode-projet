@@ -19,9 +19,10 @@
 ## En fin de tâche
 
 Une tâche n'est finie qu'après ces étapes :
-1. Mettre à jour chaque document concerné par le changement, d'après le tableau « Qui tient quoi à jour » de la carte.
-2. Commiter, puis pousser vers GitHub.
-3. Si la fonctionnalité est terminée, dire à l'utilisateur que c'est le bon moment pour `/clear`. Le hook `rappel-clear` le lui rappelle aussi.
+1. `outils/verifier.ps1` au vert, la fonctionnalité essayée en vrai, et le diff relu avec `/code-review`.
+2. Mettre à jour chaque document concerné par le changement, d'après le tableau « Qui tient quoi à jour » de la carte.
+3. Commiter, puis pousser vers GitHub.
+4. Si la fonctionnalité est terminée, dire à l'utilisateur que c'est le bon moment pour `/clear`. Le hook `rappel-clear` le lui rappelle aussi.
 
 ## Mémoire
 
@@ -38,9 +39,16 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Petites fonctions génériques, une seule responsabilité chacune, assemblées par composition.
 - Valeurs pilotées par les données, aucune valeur en dur.
 - Modules découplés par interfaces et événements.
-- Logique séparée de l'affichage, et testée.
-- Aucune erreur silencieuse.
-- « Fini » veut dire : compile sans warning, tests verts, vérifié en vrai, docs à jour, commit fait.
+- Logique séparée de l'affichage, pour pouvoir la tester.
+- « Fini » veut dire : `verifier.ps1` vert, essayé en vrai, diff relu, docs à jour, commit fait et poussé.
+
+## Qualité : zéro bug
+
+- Tests d'abord : chaque brique de logique a ses tests, écrits avant le code.
+- Un bug corrigé commence par un test qui le reproduit. Chaque bug trouvé devient une issue GitHub, avec les étapes pour le reproduire.
+- `outils/verifier.ps1` lance toutes les vérifications. Il doit être vert avant de finir une tâche et avant chaque commit : les hooks y veillent. On y ajoute chaque nouvelle sorte de vérification.
+- Zéro warning, zéro erreur dans les logs, aucune erreur silencieuse.
+- Jamais `--no-verify`, jamais un test désactivé ou affaibli pour passer.
 
 ## Carte du projet
 

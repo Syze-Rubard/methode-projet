@@ -36,6 +36,14 @@ Une ligne par décision, avec son pourquoi, pour ne pas la rediscuter.
 | Date | Décision | Pourquoi |
 |---|---|---|
 
+## Tests et qualité
+
+| Niveau | Quoi | Outil |
+|---|---|---|
+| {{NIVEAU : logique, données, intégration, fumée…}} | {{CE QUI EST TESTÉ}} | {{OUTIL DE TEST}} |
+
+`outils/verifier.ps1` lance tous ces niveaux, du plus rapide au plus lent.
+
 ## Définition de « fini »
 
-Compile sans warning, tests verts, vérifié en vrai, docs à jour, commit fait.
+`outils/verifier.ps1` vert (compilation sans warning, tous les tests), essayé en vrai, diff relu, docs à jour, commit fait et poussé.

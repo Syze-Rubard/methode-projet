@@ -62,13 +62,50 @@ Les modèles :
 ## Le cycle d'une fonctionnalité
 
 1. **Session neuve** (`/clear` ou nouvelle session) : CLAUDE.md charge la carte et l'index de la mémoire.
-2. **Mode plan** : lire les fiches et docs utiles, proposer un plan court, attendre l'accord.
-3. **Construire** en petites fonctions génériques, puis **tester**.
-4. **Checklist de fin de tâche** :
+2. **Mode plan** : lire les fiches et docs utiles, puis proposer un plan court. Le plan dit comment la fonctionnalité sera testée : tests automatiques et essai à la main. Attendre l'accord.
+3. **Tests d'abord** : écrire les tests du comportement voulu et les voir échouer. Puis construire en petites fonctions génériques jusqu'à ce qu'ils passent.
+4. **Vérifier** :
+   - `outils/verifier.ps1` au vert ;
+   - la fonctionnalité essayée en vrai ;
+   - le diff relu avec `/code-review`, et ses trouvailles corrigées.
+5. **Checklist de fin de tâche** :
    - mettre à jour chaque document concerné, d'après le tableau « Qui tient quoi à jour » de la carte ;
    - ajouter à la mémoire toute info durable (décision, préférence, état du projet) ;
    - commiter, puis pousser.
-5. **`/clear`** : le hook `rappel-clear` prévient l'utilisateur après un commit, ou quand le contexte dépasse 150k tokens.
+6. **`/clear`** : le hook `rappel-clear` prévient l'utilisateur après un commit, ou quand le contexte dépasse 150k tokens.
+
+## Qualité : zéro bug
+
+Le but est un projet sans bug. Chaque moyen ci-dessous attrape des bugs que les autres laissent passer, donc on les cumule.
+
+**À chaque changement :**
+- **Tests d'abord** pour chaque brique de logique. Un test décrit un comportement, pas le code.
+- **Un bug corrigé commence par un test** qui le reproduit et échoue. La correction le fait passer, et le bug ne revient plus.
+- **Toute la suite de tests**, pas seulement ceux du jour. C'est elle qui voit ce qu'un changement casse ailleurs.
+- **Les données testées comme le code** : un test charge chaque fichier de données et vérifie ses références et ses bornes.
+- **Zéro warning et zéro erreur dans les logs.** Un warning toléré en cache un autre.
+- **Échouer bruyamment.** On vérifie les entrées aux frontières des modules, on met des assertions sur ce qui « ne peut pas arriver », et jamais de `catch` vide.
+- **Relire le diff** avec `/code-review` avant de commiter une fonctionnalité, et corriger ce qu'il trouve.
+- **Jamais `--no-verify`**, jamais un test désactivé ou affaibli pour passer. Si un test gêne, on corrige le code ou le test, avec l'accord de l'utilisateur.
+
+**Les garde-fous automatiques :**
+- **`outils/verifier.ps1`** est la commande unique qui lance toutes les vérifications du projet : compilation, tests, données, analyse. Il ne sort à 0 que si tout passe.
+  - Il est créé dès le premier code, à partir de `modeles/outils/verifier.ps1`.
+  - Chaque nouvelle sorte de vérification y est ajoutée.
+- **Le hook git `pre-commit`** le lance avant chaque commit, de Claude comme de l'utilisateur, et bloque le commit si c'est rouge.
+- **Le hook Claude Code `garde-tests`** renvoie Claude au travail s'il veut finir alors que du code a changé depuis la dernière vérification réussie.
+- **L'intégration continue** (GitHub Actions) est à mettre en place dès que le projet a du code : elle relance la vérification à chaque push, sur une machine propre.
+
+**Les bugs trouvés :** chacun suit le même chemin.
+1. Une issue GitHub (`gh issue create`), avec les étapes pour le reproduire.
+2. Un test qui le reproduit.
+3. La correction.
+4. Un commit qui ferme l'issue (`Fixes #N`).
+
+**Pour un jeu, en plus :**
+- une graine pour tout l'aléatoire, notée dans chaque rapport de bug : tout bug se rejoue à l'identique ;
+- des tests de jeu automatiques, et un test de fumée qui charge chaque scène et joue quelques secondes sans erreur ;
+- dans les builds, un log et un rapport de crash qui notent la version et la graine.
 
 Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.
 
@@ -103,10 +140,9 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - Petites fonctions génériques, une seule responsabilité, assemblées par composition.
 - Valeurs pilotées par les données, jamais en dur.
 - Modules découplés par interfaces et événements, frontières vérifiées par le compilateur quand la techno le permet.
-- Logique séparée de l'affichage, et testée.
-- Aucune erreur silencieuse.
+- Logique séparée de l'affichage, pour pouvoir la tester.
 - Avant d'écrire du code, chercher une brique existante à réutiliser ou à généraliser.
-- « Fini » : compile sans warning, tests verts, vérifié en vrai, docs à jour, commit fait.
+- « Fini » : `verifier.ps1` vert, essayé en vrai, diff relu, docs à jour, commit fait et poussé.
 
 ## Hooks
 
@@ -114,6 +150,8 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - Déclarés en forme exec dans `.claude/settings.json` (`"command": "powershell.exe"` et `"args"`), avec un chemin relatif au projet : ça marche que Claude Code passe par Git Bash ou par PowerShell.
 - Tester un hook en lui envoyant un JSON d'exemple sur l'entrée standard avant de le déclarer.
 - `rappel-clear.ps1` (Stop) affiche un message à l'utilisateur après un nouveau commit, et quand le contexte franchit 150k, 250k, 350k tokens… Les seuils sont en tête du script.
+- `garde-tests.ps1` (Stop et `pre-commit`) retient l'empreinte des fichiers qui ont passé `verifier.ps1`. Les docs et les `.md` n'en font pas partie. Il ne fait rien tant que le projet n'a pas de `verifier.ps1`. Il renvoie Claude au travail une seule fois par tour, pour ne pas boucler.
+- Les hooks git vivent dans `.githooks/`, versionnés, avec des fins de ligne LF (règle dans `.gitattributes`). `preparer-projet.ps1` les active, et Git LFS y écrit aussi les siens.
 
 ## Phases d'un jeu vidéo (exemple Steam)
 

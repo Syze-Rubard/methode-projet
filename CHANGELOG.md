@@ -2,6 +2,15 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : qualité, zéro bug
+
+Le but est un projet sans bug, donc les tests ne reposent plus sur la bonne volonté :
+- `outils/verifier.ps1` est la commande unique de vérification d'un projet. Son modèle est dans `modeles/outils/` ;
+- le hook git `pre-commit`, dans `.githooks/` et activé par `preparer-projet.ps1`, bloque tout commit qui ne passe pas la vérification ;
+- le hook Claude Code `garde-tests` empêche Claude de finir avec du code non vérifié ;
+- le cycle passe aux tests d'abord, avec une relecture du diff avant chaque commit. Un bug corrigé commence par un test, et chaque bug devient une issue GitHub ;
+- une section « Qualité : zéro bug » dans le skill et dans le modèle de CLAUDE.md, et un tableau des niveaux de test dans `architecture.md`.
+
 ## 2026-10-25 : installation par scripts
 
 Pour obtenir le même résultat sur chaque PC et pour chaque personne, sans dépendre d'une copie faite à la main par Claude :

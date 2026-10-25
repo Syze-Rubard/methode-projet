@@ -14,6 +14,10 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
     settings.local.json     réglages propres à ce PC, dont le chemin de la mémoire (non versionné)
     hooks/
       rappel-clear.ps1      prévient quand c'est le bon moment de faire /clear
+      garde-tests.ps1       empêche de finir ou de commiter du code non vérifié
+  .githooks/                hooks git versionnés : vérification avant chaque commit
+  outils/
+    verifier.ps1            lance toutes les vérifications du projet (créé avec le premier code)
   docs/
     README.md               cette carte
     architecture.md         principes de code, structure, conventions, décisions techniques

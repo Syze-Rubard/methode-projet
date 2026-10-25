@@ -1,0 +1,6 @@
+# Normalize line endings of text files
+* text=auto
+*.ps1 text eol=crlf
+
+# Git hooks run under sh, which needs LF line endings
+modeles/projet/.githooks/* text eol=lf
