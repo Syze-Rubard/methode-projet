@@ -23,6 +23,7 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
   docs/
     README.md               cette carte
     architecture.md         principes de code, structure, conventions, décisions techniques
+    feuille-de-route.md     les étapes du projet jusqu'au lancement, et où on en est
     licences.md             licence de chaque contenu externe ou généré par IA
     memoire/                mémoire de Claude : l'index MEMORY.md et une fiche par sujet
   {{DOSSIERS DU CODE ET DES CONTENUS}}
@@ -54,6 +55,7 @@ Un sujet par document, sans doublon.
 | Conception du projet | {{DOCUMENT DE CONCEPTION}} | une fonctionnalité est construite ou une décision est prise |
 | Principes, structure et conventions du code | [architecture.md](architecture.md) | un module, un dossier de code ou une convention change |
 | Décisions techniques | [architecture.md](architecture.md) | une décision technique est prise |
+| Étapes du projet et avancement | [feuille-de-route.md](feuille-de-route.md) | une étape est finie, ajoutée ou déplacée |
 | Licences des contenus | [licences.md](licences.md) | un contenu externe ou généré par IA entre dans le projet |
 | Dossiers et documents | cette carte | on en ajoute, en déplace ou en supprime un |
 | Outils du PC | cette carte | un outil ou sa version change |

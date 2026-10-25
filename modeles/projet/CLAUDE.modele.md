@@ -5,8 +5,9 @@
 ## En début de session
 
 1. La carte du projet et l'index de la mémoire sont chargés en bas de ce fichier. Lire dans `docs/memoire/` les fiches utiles à la tâche.
-2. Pour toute question de conception, {{DOCUMENT DE CONCEPTION ET SON LIEN}} fait foi.
-3. Avant d'écrire du code, lire `docs/architecture.md`.
+2. La prochaine étape est la première case non cochée de `docs/feuille-de-route.md`.
+3. Pour toute question de conception, {{DOCUMENT DE CONCEPTION ET SON LIEN}} fait foi.
+4. Avant d'écrire du code, lire `docs/architecture.md`.
 
 ## Règles de travail
 
@@ -20,7 +21,7 @@
 
 Une tâche n'est finie qu'après ces étapes :
 1. `outils/verifier.ps1` au vert, la fonctionnalité essayée en vrai, et le diff relu avec `/code-review`.
-2. Mettre à jour chaque document concerné par le changement, d'après le tableau « Qui tient quoi à jour » de la carte.
+2. Mettre à jour chaque document concerné par le changement, d'après le tableau « Qui tient quoi à jour » de la carte, et cocher la case de la feuille de route.
 3. Commiter, puis pousser vers GitHub.
 4. Si la fonctionnalité est terminée, dire à l'utilisateur que c'est le bon moment pour `/clear`. Le hook `rappel-clear` le lui rappelle aussi.
 

@@ -2,6 +2,15 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : feuille de route
+
+Les phases disaient où va le projet, mais pas quelle session vient ensuite. RogueHack a gagné une feuille de route étape par étape, reprise ici pour tout projet :
+- le modèle `docs/feuille-de-route.md` : une case par session, regroupées par phase de 0 à 7, et une section « Où on en est » ;
+- les phases lointaines restent en grands blocs, découpées en sessions juste avant de les commencer, avec les leçons de la phase précédente ;
+- ce qu'on fait à chaque jalon tient au même endroit : tag, version livrée profilée, export des documents hors du dossier, copie du dossier, découpage de la phase suivante ;
+- en début de session, la prochaine étape est la première case non cochée. En fin de tâche, on coche sa case et on met à jour « Où on en est » ;
+- la carte, le modèle de CLAUDE.md et le démarrage d'un projet en parlent. La fiche projet de la mémoire renvoie à la feuille de route, pour ne pas tenir la suite à deux endroits.
+
 ## 2026-10-25 : tout type de projet de code
 
 La méthode était écrite autour d'un jeu Steam. L'utilisateur la veut aussi utile pour un jeu mobile, une appli, un logiciel ou tout autre projet de code :

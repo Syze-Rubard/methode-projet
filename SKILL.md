@@ -1,6 +1,6 @@
 ---
 name: methode-projet
-description: Méthode de travail pro avec Claude Code, commune à tous les projets de code de l'utilisateur, quel que soit leur type (jeu PC, console ou mobile, appli mobile, logiciel de bureau, site ou service web, outil en ligne de commande, bibliothèque). Structure de doc (CLAUDE.md, carte du projet, architecture, mémoire versionnée dans le projet), une fonctionnalité par session, checklist de fin de tâche, gestion du contexte (/clear, compaction), hooks et git. À utiliser pour démarrer un nouveau projet, remettre de l'ordre dans un projet existant, vérifier qu'un projet suit la méthode, ou améliorer la méthode elle-même.
+description: Méthode de travail pro avec Claude Code, commune à tous les projets de code de l'utilisateur, quel que soit leur type (jeu PC, console ou mobile, appli mobile, logiciel de bureau, site ou service web, outil en ligne de commande, bibliothèque). Structure de doc (CLAUDE.md, carte du projet, architecture, feuille de route, mémoire versionnée dans le projet), une fonctionnalité par session, checklist de fin de tâche, gestion du contexte (/clear, compaction), hooks et git. À utiliser pour démarrer un nouveau projet, remettre de l'ordre dans un projet existant, vérifier qu'un projet suit la méthode, ou améliorer la méthode elle-même.
 ---
 
 # Méthode projet
@@ -42,8 +42,8 @@ Les modèles :
 1. Demander à l'utilisateur le nom du projet, son pitch en une phrase, son type (voir « Selon le type de projet »), la techno, et le document de conception (GDD, cahier des charges…) s'il existe.
 2. Lancer `preparer-pc.ps1`. Si tout est `[ok]`, passer à la suite.
 3. Si la techno n'a pas encore de modèle dans `modeles/techno/`, le créer d'abord (voir « Améliorer la méthode »). Puis lancer `preparer-projet.ps1` sur le dossier du projet, avec `-Techno`.
-4. Remplir chaque `{{...}}` listé, retirer ce qui ne sert pas, et compléter la fiche projet de la mémoire et la section « Outils du PC » de la carte (moteur, SDK, logiciels, MCP). Les sections « Tests et qualité », « Performance » et « Sécurité » de `architecture.md` se remplissent d'après le type du projet.
-5. Faire un premier commit, puis sauvegarder hors du disque : `gh repo create <nom> --private --source . --push`.
+4. Remplir chaque `{{...}}` listé, retirer ce qui ne sert pas, et compléter la fiche projet de la mémoire et la section « Outils du PC » de la carte (moteur, SDK, logiciels, MCP). Les sections « Tests et qualité », « Performance » et « Sécurité » de `architecture.md` se remplissent d'après le type du projet. La feuille de route découpe en sessions les phases 0 à 2, d'après le document de conception, et laisse les suivantes en grands blocs.
+5. Cocher l'étape 0.1 de la feuille de route, faire un premier commit, puis sauvegarder hors du disque : `gh repo create <nom> --private --source . --push`.
 6. Dire à l'utilisateur que les hooks et la mémoire prennent effet à la session suivante.
 
 ## Reprendre un projet sur un autre PC
@@ -62,7 +62,7 @@ Les modèles :
 
 ## Le cycle d'une fonctionnalité
 
-1. **Session neuve** (`/clear` ou nouvelle session) : CLAUDE.md charge la carte et l'index de la mémoire.
+1. **Session neuve** (`/clear` ou nouvelle session) : CLAUDE.md charge la carte et l'index de la mémoire. La prochaine étape est la première case non cochée de `docs/feuille-de-route.md`.
 2. **Mode plan** : lire les fiches et docs utiles, puis proposer un plan court. Le plan dit comment la fonctionnalité sera testée (tests automatiques et essai à la main) et ce qu'elle coûte en performance. Attendre l'accord.
 3. **Tests d'abord** : écrire les tests du comportement voulu et les voir échouer. Puis construire en petites fonctions génériques jusqu'à ce qu'ils passent.
 4. **Vérifier** :
@@ -71,6 +71,7 @@ Les modèles :
    - le diff relu avec `/code-review`, et ses trouvailles corrigées.
 5. **Checklist de fin de tâche** :
    - mettre à jour chaque document concerné, d'après le tableau « Qui tient quoi à jour » de la carte ;
+   - cocher la case de la feuille de route, et mettre à jour « Où on en est » ;
    - ajouter à la mémoire toute info durable (décision, préférence, état du projet) ;
    - commiter, puis pousser.
 6. **`/clear`** : le hook `rappel-clear` prévient l'utilisateur après un commit, ou quand le contexte dépasse 150k tokens.
@@ -238,6 +239,7 @@ Un produit vendu ne doit contenir que des choses qu'on a le droit de publier :
 | `CLAUDE.md` | Règles chargées à chaque session | Moins de 200 lignes ; importe la carte et l'index de mémoire avec `@` |
 | `docs/README.md` | La carte : arborescence, documents hors du dossier, « qui tient quoi à jour » | Mise à jour dès qu'un dossier ou un doc bouge |
 | `docs/architecture.md` | Principes de code, structure, conventions, décisions techniques avec leur pourquoi | Mise à jour quand un module, une convention ou une décision change |
+| `docs/feuille-de-route.md` | Les étapes jusqu'au lancement, une case par session, regroupées par phase, et « Où on en est » | Case cochée à la fin de sa session. Les phases lointaines restent en grands blocs, découpées en sessions juste avant de les commencer |
 | `docs/memoire/` | Mémoire de Claude : index `MEMORY.md`, une fiche par sujet | Voir « Mémoire » |
 | `docs/licences.md` | Licence de chaque contenu externe ou généré par IA | Une ligne ajoutée dans la même session que le contenu |
 | Document de conception | Le design, source de vérité | Document vivant : mis à jour à chaque fonctionnalité ou décision, compact, ce qui est abandonné est retiré |
@@ -324,6 +326,8 @@ Les règles ci-dessus valent pour tous les projets de code. Voici ce qui change 
 5. Itérations de contenu et de fonctionnalités, avec un accès anticipé possible.
 6. Lancement.
 7. Suivi : correctifs, mises à jour et retours des utilisateurs.
+
+`docs/feuille-de-route.md` découpe ces phases en sessions. Le document de conception définit le jalon de chaque phase et son critère de passage. Ce qu'on fait à chaque jalon (tag, version profilée, exports, copie du dossier) est en tête de la feuille de route.
 
 ## Améliorer la méthode
 
