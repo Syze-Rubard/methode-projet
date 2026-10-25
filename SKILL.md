@@ -62,7 +62,7 @@ Les modèles :
 ## Le cycle d'une fonctionnalité
 
 1. **Session neuve** (`/clear` ou nouvelle session) : CLAUDE.md charge la carte et l'index de la mémoire.
-2. **Mode plan** : lire les fiches et docs utiles, puis proposer un plan court. Le plan dit comment la fonctionnalité sera testée : tests automatiques et essai à la main. Attendre l'accord.
+2. **Mode plan** : lire les fiches et docs utiles, puis proposer un plan court. Le plan dit comment la fonctionnalité sera testée (tests automatiques et essai à la main) et ce qu'elle coûte en performance. Attendre l'accord.
 3. **Tests d'abord** : écrire les tests du comportement voulu et les voir échouer. Puis construire en petites fonctions génériques jusqu'à ce qu'ils passent.
 4. **Vérifier** :
    - `outils/verifier.ps1` au vert ;
@@ -73,6 +73,8 @@ Les modèles :
    - ajouter à la mémoire toute info durable (décision, préférence, état du projet) ;
    - commiter, puis pousser.
 6. **`/clear`** : le hook `rappel-clear` prévient l'utilisateur après un commit, ou quand le contexte dépasse 150k tokens.
+
+Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.
 
 ## Qualité : zéro bug
 
@@ -150,7 +152,40 @@ Les fichiers sont en JSON, une ligne par entrée, pour que Claude les filtre en 
 2. si les logs ne suffisaient pas à comprendre, ajouter les logs qui ont manqué, en plus du test qui reproduit le bug ;
 3. joindre les logs à l'issue.
 
-Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.
+## Performance : jamais de ralentissement
+
+Rien de ce qu'on ajoute ne doit faire ramer le programme. Un ralentissement est un bug comme un autre : il a son issue, son test et sa correction.
+
+**Des budgets chiffrés**, notés dans `docs/architecture.md` et décidés avec l'utilisateur. Pour un jeu :
+- le temps par image sur la configuration minimale visée, en médiane et sur le 1 % des pires images (les saccades comptent) ;
+- le même sur le PC de développement, plus serré : c'est lui que les tests de chaque commit vérifient ;
+- aucune allocation mémoire par image en jeu ;
+- la mémoire maximale et le temps de chargement.
+
+**Mesurer, pas deviner :**
+- on profile avant d'optimiser, et on optimise là où la mesure le montre ;
+- les vrais chiffres se prennent dans un build, sur la configuration minimale : l'éditeur et un PC puissant les faussent.
+
+**Tests de performance automatiques**, dans `outils/verifier.ps1`, après les autres tests :
+- des scénarios de pire cas, joués quelques secondes chacun ;
+- chacun échoue s'il dépasse le budget du PC de développement, ou s'il alloue de la mémoire là où il ne doit pas ;
+- chacun échoue aussi s'il régresse de plus de 10 % par rapport à la référence de ce PC (`outils/perf-reference.json`, ignorée par git) ;
+- une amélioration voulue met la référence à jour, avec l'accord de l'utilisateur.
+
+**À chaque fonctionnalité :**
+- le plan dit ce qu'elle coûte en performance ;
+- le diff relu cherche aussi les coûts cachés : allocations, recherches répétées, boucles sur tout le monde.
+
+**À chaque jalon**, un build passé au profiler sur la configuration minimale, avec les chiffres notés dans `architecture.md`.
+
+**Du code générique et rapide à la fois :** les petites fonctions génériques restent la règle. Dans le code chaud, c'est-à-dire ce qui tourne à chaque image ou pour chaque entité :
+- aucune allocation ;
+- des références gardées en cache ;
+- des pools d'objets au lieu de créer et détruire ;
+- des événements plutôt que des vérifications à chaque image ;
+- des structures de données adaptées au volume.
+
+**En développement**, un affichage permanent montre les images par seconde, le temps par image, les allocations et la mémoire.
 
 ## Documents
 
@@ -185,7 +220,8 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - Modules découplés par interfaces et événements, frontières vérifiées par le compilateur quand la techno le permet.
 - Logique séparée de l'affichage, pour pouvoir la tester.
 - Avant d'écrire du code, chercher une brique existante à réutiliser ou à généraliser.
-- « Fini » : `verifier.ps1` vert, essayé en vrai, diff relu, docs à jour, commit fait et poussé.
+- Rapide dans le code chaud : voir « Performance ».
+- « Fini » : `verifier.ps1` vert (tests de performance compris), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
 
 ## Hooks
 

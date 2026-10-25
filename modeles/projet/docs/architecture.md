@@ -55,6 +55,23 @@ Règles générales : section « Logs » du skill `methode-projet`.
 | Contexte de chaque ligne | {{VERSION, SESSION, AUTRES CLÉS}} |
 | Fichiers | {{EMPLACEMENT, NOMBRE DE SESSIONS GARDÉES}} |
 
+## Performance
+
+Règles générales : section « Performance » du skill `methode-projet`.
+
+| Budget | Configuration minimale | PC de développement | Mesuré par |
+|---|---|---|---|
+| {{TEMPS PAR IMAGE, ALLOCATIONS, MÉMOIRE, CHARGEMENT…}} | {{VALEUR}} | {{VALEUR}} | {{TEST OU OUTIL}} |
+
+Configuration minimale : {{MATÉRIEL}}. PC de développement : {{MATÉRIEL}}.
+
+Scénarios de pire cas testés : {{SCÉNARIOS}}.
+
+Mesures à chaque jalon :
+
+| Date | Jalon | Résultat |
+|---|---|---|
+
 ## Définition de « fini »
 
-`outils/verifier.ps1` vert (compilation sans warning, tous les tests), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
+`outils/verifier.ps1` vert (compilation sans warning, tous les tests, performance comprise), essayé en vrai, diff relu, docs à jour, commit fait et poussé.

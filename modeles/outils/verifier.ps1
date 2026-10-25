@@ -8,8 +8,9 @@ $ErrorActionPreference = 'Stop'
 
 $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 
-# The checks of this project, from the fastest to the slowest. Each Run block calls a command
-# that fails with a non-zero exit code. Reports go to an ignored folder, never to tracked files.
+# The checks of this project, from the fastest to the slowest, performance tests last. Each Run
+# block calls a command that fails with a non-zero exit code. Reports go to an ignored folder,
+# never to tracked files.
 # Example: @{ Name = 'Tests'; Run = { dotnet test "$ProjectDir\Tests" } }
 $Checks = @(
 )

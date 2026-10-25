@@ -40,7 +40,7 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Valeurs pilotées par les données, aucune valeur en dur.
 - Modules découplés par interfaces et événements.
 - Logique séparée de l'affichage, pour pouvoir la tester.
-- « Fini » veut dire : `verifier.ps1` vert, essayé en vrai, diff relu, docs à jour, commit fait et poussé.
+- « Fini » veut dire : `verifier.ps1` vert (performance comprise), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
 
 ## Qualité : zéro bug
 
@@ -51,6 +51,13 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Des logs abondants, et toujours par le module de log du projet. Ils couvrent chaque changement d'état, chaque décision avec son pourquoi, et chaque erreur avec son contexte. Les règles et l'emplacement des fichiers sont dans `docs/architecture.md`.
 - Pour un bug, lire d'abord les logs. Si les logs n'ont pas suffi à le comprendre, ajouter ceux qui ont manqué.
 - Jamais `--no-verify`, jamais un test désactivé ou affaibli pour passer.
+
+## Performance
+
+- Rien de ce qu'on ajoute ne doit ralentir le programme. Un ralentissement est un bug.
+- Les budgets chiffrés sont dans `docs/architecture.md`. Les tests de performance de `outils/verifier.ps1` échouent au-delà du budget du PC de développement, ou si une mesure régresse de plus de 10 %.
+- Chaque plan dit ce que la fonctionnalité coûte en performance. On mesure avant d'optimiser.
+- Dans le code chaud, c'est-à-dire ce qui tourne à chaque image ou pour chaque entité : aucune allocation, des références en cache, des pools d'objets, des événements plutôt que des vérifications répétées.
 
 ## Carte du projet
 

@@ -1,6 +1,9 @@
 # Claude Code settings specific to this PC
 .claude/settings.local.json
 
+# Performance reference measured on this PC
+outils/perf-reference.json
+
 # IDE
 .vs/
 .vscode/

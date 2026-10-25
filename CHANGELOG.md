@@ -2,6 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : performance, jamais de ralentissement
+
+L'utilisateur veut un programme optimisé, qui ne rame jamais à cause de ce qu'on ajoute :
+- une section « Performance » dans le skill : des budgets chiffrés pour la configuration minimale et pour le PC de développement, mesurer avant d'optimiser, des tests de performance dans `outils/verifier.ps1` qui échouent au-delà du budget ou à plus de 10 % de régression, un build profilé à chaque jalon, et les règles du code chaud ;
+- le plan de chaque fonctionnalité dit ce qu'elle coûte en performance ;
+- une section dans le modèle de CLAUDE.md, un tableau des budgets dans `architecture.md`, et `outils/perf-reference.json` ignoré par git.
+
 ## 2026-10-25 : logs pour retrouver un bug vite
 
 L'utilisateur veut retrouver tout bug vite, à partir des logs, et plus il y en a, mieux c'est :

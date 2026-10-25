@@ -18,6 +18,7 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
   .githooks/                hooks git versionnés : vérification avant chaque commit
   outils/
     verifier.ps1            lance toutes les vérifications du projet (créé avec le premier code)
+    perf-reference.json     mesures de performance de référence sur ce PC (non versionné)
   docs/
     README.md               cette carte
     architecture.md         principes de code, structure, conventions, décisions techniques
