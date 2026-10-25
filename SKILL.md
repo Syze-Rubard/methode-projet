@@ -5,11 +5,12 @@ description: Méthode de travail pro avec Claude Code, commune à tous les proje
 
 # Méthode projet
 
-Une méthode pour mener un gros projet avec Claude Code sans perdre en qualité ni en mémoire. Elle tient en quatre idées :
+Une méthode pour mener un gros projet avec Claude Code sans perdre en qualité ni en mémoire. Elle tient en cinq idées :
 1. **Tout ce qui compte est écrit sur le disque.** Une session neuve ne perd rien, donc on repart de zéro à chaque fonctionnalité.
 2. **Un sujet par document, sans doublon.** Chaque info a une seule place, et une carte dit laquelle.
 3. **Petit bout par petit bout.** Une fonctionnalité par session, testée et commitée avant la suivante.
 4. **Automatiser plutôt que se fier aux consignes.** Ce qui doit arriver à coup sûr passe par un hook ou un réglage.
+5. **Juste ce qu'il faut, au bon moment.** Chaque outil se met en place quand le premier code en a besoin, pas avant : le vérificateur avec le premier code, les tests de performance avec la première scène jouable, les tests réseau avec la coop. Une règle qui coûte plus qu'elle ne rapporte est signalée à l'utilisateur.
 
 ## Les scripts
 
@@ -187,6 +188,47 @@ Rien de ce qu'on ajoute ne doit faire ramer le programme. Un ralentissement est 
 
 **En développement**, un affichage permanent montre les images par seconde, le temps par image, les allocations et la mémoire.
 
+## Sécurité
+
+Rien de secret ne sort du PC, et rien de ce qui entre n'est cru sur parole.
+
+**Les secrets** (mots de passe, clés d'API, jetons, certificats, clés de signature) :
+- jamais dans le dépôt, même privé : ils vivent dans un fichier ignoré par git, ou dans le coffre du service (les secrets de GitHub Actions) ;
+- jamais dans un build livré : un joueur peut lire tout ce qu'il contient ;
+- le hook git `pre-commit` bloque un commit qui contient un fichier de clé ou un secret reconnaissable ;
+- un secret qui a fuité est révoqué et remplacé tout de suite : l'effacer de l'historique ne suffit pas ;
+- Claude ne saisit jamais un secret : l'utilisateur le fait lui-même.
+
+**Les dépendances** (packages, plugins, assets, serveurs MCP) :
+- seulement de sources connues, avec une version fixée ;
+- mises à jour volontairement, une à la fois, suivies de la vérification complète ;
+- jamais de script ni d'exécutable téléchargé lancé sans l'avoir lu.
+
+**Les données qui entrent** sont validées à la frontière, comme si elles étaient hostiles :
+- un fichier chargé (sauvegarde, configuration, mod) abîmé ou modifié ne fait jamais planter : il est signalé dans les logs et écarté ;
+- jamais de désérialisation capable de créer n'importe quel type, comme `BinaryFormatter` en C# ;
+- en réseau, l'hôte ou le serveur fait autorité et vérifie chaque message d'un client : son type, ses bornes, sa fréquence.
+
+**Les données personnelles** : aucune collectée sans besoin ni sans accord. Rapports de crash et statistiques sont annoncés et désactivables.
+
+**Les comptes** : double authentification sur GitHub et sur chaque compte de publication, et dépôts privés par défaut.
+
+## Sauvegarde du projet
+
+- Le code, les docs, la mémoire et les assets suivis par Git LFS sont sur GitHub dès que le commit est poussé.
+- Le quota Git LFS du compte GitHub est surveillé : les assets lourds le remplissent vite.
+- Ce qui vit hors de git est listé dans la carte (« Hors du dossier »), avec l'endroit où c'est sauvegardé.
+- À chaque jalon, une copie complète du dossier sur un autre support.
+
+## Licences et droits
+
+Un produit vendu ne doit contenir que des choses qu'on a le droit de publier :
+- `docs/licences.md` liste chaque contenu externe (asset, police, son, musique, code) avec sa source, sa licence et l'attribution demandée. Sa ligne est ajoutée dans la même session que lui ;
+- un contenu sans licence claire n'entre pas dans le projet ;
+- les contenus générés par IA y sont notés aussi : Steam demande de les déclarer ;
+- les crédits du produit sont tirés de ce fichier ;
+- aucune marque, aucun logo ni nom de produit d'autrui sans en avoir le droit.
+
 ## Documents
 
 | Document | Rôle | Règle |
@@ -195,6 +237,7 @@ Rien de ce qu'on ajoute ne doit faire ramer le programme. Un ralentissement est 
 | `docs/README.md` | La carte : arborescence, documents hors du dossier, « qui tient quoi à jour » | Mise à jour dès qu'un dossier ou un doc bouge |
 | `docs/architecture.md` | Principes de code, structure, conventions, décisions techniques avec leur pourquoi | Mise à jour quand un module, une convention ou une décision change |
 | `docs/memoire/` | Mémoire de Claude : index `MEMORY.md`, une fiche par sujet | Voir « Mémoire » |
+| `docs/licences.md` | Licence de chaque contenu externe ou généré par IA | Une ligne ajoutée dans la même session que le contenu |
 | Document de conception | Le design, source de vérité | Document vivant : mis à jour à chaque fonctionnalité ou décision, compact, ce qui est abandonné est retiré |
 
 Si le document de conception est un Claude Doc, chaque passe de modifs est marquée : surlignage dans le texte, cellules bleues `#e7f1fb` dans les tableaux. Les marques précédentes sont retirées quand l'utilisateur dit avoir relu.
@@ -221,6 +264,8 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - Logique séparée de l'affichage, pour pouvoir la tester.
 - Avant d'écrire du code, chercher une brique existante à réutiliser ou à généraliser.
 - Rapide dans le code chaud : voir « Performance ».
+- Aucun texte visible en dur : tout passe par des tables de traduction dès le premier écran, même si le produit sort en une seule langue. Ajouter une langue après coup coûte très cher.
+- Les sauvegardes du joueur portent un numéro de version, avec une migration depuis chaque version précédente : une mise à jour ne casse jamais une partie en cours.
 - « Fini » : `verifier.ps1` vert (tests de performance compris), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
 
 ## Hooks
@@ -230,6 +275,7 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - Tester un hook en lui envoyant un JSON d'exemple sur l'entrée standard avant de le déclarer.
 - `rappel-clear.ps1` (Stop) affiche un message à l'utilisateur après un nouveau commit, et quand le contexte franchit 150k, 250k, 350k tokens… Les seuils sont en tête du script.
 - `garde-tests.ps1` (Stop et `pre-commit`) retient l'empreinte des fichiers qui ont passé `verifier.ps1`. Les docs et les `.md` n'en font pas partie. Il ne fait rien tant que le projet n'a pas de `verifier.ps1`. Il renvoie Claude au travail une seule fois par tour, pour ne pas boucler.
+- `garde-secrets.ps1` (`pre-commit`, avant `garde-tests`) bloque un commit qui ajoute un fichier de clé (`.env`, `.pem`, `.pfx`, `.keystore`…) ou une ligne qui ressemble à un secret : clé privée, jeton connu, mot de passe écrit en clair. Il montre l'endroit, jamais le secret. Un faux positif reconnu porte le marqueur `garde-secrets: ignorer` sur sa ligne, avec l'accord de l'utilisateur.
 - Les hooks git vivent dans `.githooks/`, versionnés, avec des fins de ligne LF (règle dans `.gitattributes`). `preparer-projet.ps1` les active, et Git LFS y écrit aussi les siens.
 
 ## Phases d'un jeu vidéo (exemple Steam)

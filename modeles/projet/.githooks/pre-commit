@@ -1,3 +1,5 @@
 #!/bin/sh
-# Blocks the commit when the project's checks fail (see .claude/hooks/garde-tests.ps1).
+# Blocks the commit when it holds a secret (.claude/hooks/garde-secrets.ps1) or when the
+# project's checks fail (.claude/hooks/garde-tests.ps1).
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/garde-secrets.ps1 || exit 1
 exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/garde-tests.ps1 -AvantCommit

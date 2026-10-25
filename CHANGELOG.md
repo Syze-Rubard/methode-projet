@@ -2,6 +2,16 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : sécurité, sauvegarde, licences, et juste ce qu'il faut
+
+L'utilisateur a demandé la sécurité, et les autres points importants d'un projet pro :
+- une section « Sécurité » : les secrets, les dépendances, la validation de tout ce qui entre, les données personnelles, les comptes ;
+- le hook `garde-secrets.ps1`, lancé par le `pre-commit` avant `garde-tests`, bloque un commit qui contient un fichier de clé ou un secret reconnaissable ;
+- une section « Sauvegarde du projet », et une colonne « Sauvegarde » dans la carte pour ce qui vit hors de git ;
+- une section « Licences et droits », et le registre `docs/licences.md`, qui note aussi les contenus générés par IA à déclarer à Steam ;
+- deux règles de code : aucun texte visible en dur, et des sauvegardes du joueur versionnées avec une migration ;
+- une cinquième idée, « juste ce qu'il faut, au bon moment », pour que la méthode ne complique pas un projet pour rien.
+
 ## 2026-10-25 : performance, jamais de ralentissement
 
 L'utilisateur veut un programme optimisé, qui ne rame jamais à cause de ce qu'on ajoute :

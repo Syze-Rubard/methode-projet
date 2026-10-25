@@ -15,23 +15,27 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
     hooks/
       rappel-clear.ps1      prévient quand c'est le bon moment de faire /clear
       garde-tests.ps1       empêche de finir ou de commiter du code non vérifié
-  .githooks/                hooks git versionnés : vérification avant chaque commit
+      garde-secrets.ps1     empêche de commiter un secret
+  .githooks/                hooks git versionnés : secrets et vérification avant chaque commit
   outils/
     verifier.ps1            lance toutes les vérifications du projet (créé avec le premier code)
     perf-reference.json     mesures de performance de référence sur ce PC (non versionné)
   docs/
     README.md               cette carte
     architecture.md         principes de code, structure, conventions, décisions techniques
+    licences.md             licence de chaque contenu externe ou généré par IA
     memoire/                mémoire de Claude : l'index MEMORY.md et une fiche par sujet
   {{DOSSIERS DU CODE ET DES CONTENUS}}
 ```
 
+Tout ce dossier est sauvegardé sur GitHub à chaque commit poussé, et copié sur un autre support à chaque jalon.
+
 ## Hors du dossier
 
-| Document | Contenu |
-|---|---|
-| {{DOCUMENT DE CONCEPTION ET SON LIEN}} | La conception du projet, source de vérité |
-| Skill `methode-projet` | La méthode de travail, commune à tous les projets |
+| Document | Contenu | Sauvegarde |
+|---|---|---|
+| {{DOCUMENT DE CONCEPTION ET SON LIEN}} | La conception du projet, source de vérité | {{OÙ}} |
+| Skill `methode-projet` | La méthode de travail, commune à tous les projets | son dépôt GitHub |
 
 ## Outils du PC
 
@@ -50,6 +54,7 @@ Un sujet par document, sans doublon.
 | Conception du projet | {{DOCUMENT DE CONCEPTION}} | une fonctionnalité est construite ou une décision est prise |
 | Principes, structure et conventions du code | [architecture.md](architecture.md) | un module, un dossier de code ou une convention change |
 | Décisions techniques | [architecture.md](architecture.md) | une décision technique est prise |
+| Licences des contenus | [licences.md](licences.md) | un contenu externe ou généré par IA entre dans le projet |
 | Dossiers et documents | cette carte | on en ajoute, en déplace ou en supprime un |
 | Outils du PC | cette carte | un outil ou sa version change |
 | Décisions, préférences, état du projet | [memoire/](memoire/MEMORY.md) | une info durable apparaît |

@@ -40,6 +40,8 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Valeurs pilotées par les données, aucune valeur en dur.
 - Modules découplés par interfaces et événements.
 - Logique séparée de l'affichage, pour pouvoir la tester.
+- Aucun texte visible en dur : tout passe par les tables de traduction.
+- Les sauvegardes du joueur ont un numéro de version et une migration depuis chaque version précédente.
 - « Fini » veut dire : `verifier.ps1` vert (performance comprise), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
 
 ## Qualité : zéro bug
@@ -58,6 +60,13 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Les budgets chiffrés sont dans `docs/architecture.md`. Les tests de performance de `outils/verifier.ps1` échouent au-delà du budget du PC de développement, ou si une mesure régresse de plus de 10 %.
 - Chaque plan dit ce que la fonctionnalité coûte en performance. On mesure avant d'optimiser.
 - Dans le code chaud, c'est-à-dire ce qui tourne à chaque image ou pour chaque entité : aucune allocation, des références en cache, des pools d'objets, des événements plutôt que des vérifications répétées.
+
+## Sécurité et droits
+
+- Aucun secret dans le dépôt ni dans un build : ils vivent dans un fichier ignoré par git. Le hook `pre-commit` bloque un commit qui en contient un. Claude ne saisit jamais un secret.
+- Toute donnée qui entre (fichier chargé, message réseau) est validée à la frontière, et ne fait jamais planter.
+- Dépendances de sources connues, en version fixée, mises à jour une à la fois.
+- Chaque contenu externe ou généré par IA a sa ligne dans `docs/licences.md`, ajoutée dans la même session que lui.
 
 ## Carte du projet
 

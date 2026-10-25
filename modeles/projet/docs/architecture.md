@@ -72,6 +72,17 @@ Mesures à chaque jalon :
 | Date | Jalon | Résultat |
 |---|---|---|
 
+## Sécurité
+
+Règles générales : section « Sécurité » du skill `methode-projet`.
+
+| Point | Choix du projet |
+|---|---|
+| Secrets | {{LESQUELS, OÙ ILS VIVENT}} |
+| Données chargées | {{FORMATS, VALIDATION}} |
+| Réseau | {{QUI FAIT AUTORITÉ, CE QUI EST VÉRIFIÉ}} |
+| Données personnelles | {{CE QUI EST COLLECTÉ, AVEC QUEL ACCORD}} |
+
 ## Définition de « fini »
 
 `outils/verifier.ps1` vert (compilation sans warning, tous les tests, performance comprise), essayé en vrai, diff relu, docs à jour, commit fait et poussé.
