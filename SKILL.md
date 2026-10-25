@@ -103,9 +103,52 @@ Le but est un projet sans bug. Chaque moyen ci-dessous attrape des bugs que les 
 4. Un commit qui ferme l'issue (`Fixes #N`).
 
 **Pour un jeu, en plus :**
-- une graine pour tout l'aléatoire, notée dans chaque rapport de bug : tout bug se rejoue à l'identique ;
+- une graine pour tout l'aléatoire, notée dans chaque rapport de bug et dans chaque log : tout bug se rejoue à l'identique ;
 - des tests de jeu automatiques, et un test de fumée qui charge chaque scène et joue quelques secondes sans erreur ;
 - dans les builds, un log et un rapport de crash qui notent la version et la graine.
+
+## Logs : retrouver un bug vite
+
+Quand un bug arrive, les logs doivent dire ce qui s'est passé, où et pourquoi, sans avoir à le reproduire. Plus il y en a, mieux c'est. Les niveaux et les catégories permettent de n'afficher que ce qu'on cherche.
+
+**Un seul module de log**, créé avec le premier code. Jamais d'appel direct à `print` ou à `Debug.Log`. Le format, les filtres et les destinations se changent alors à un seul endroit.
+
+**Chaque ligne contient :**
+- l'heure à la milliseconde ;
+- le niveau (`Trace`, `Debug`, `Info`, `Warning`, `Error`, `Fatal`) ;
+- la catégorie, c'est-à-dire le module ;
+- le message ;
+- le contexte en `clé=valeur` : version, session, et pour un jeu la graine, l'image et le joueur.
+
+Les fichiers sont en JSON, une ligne par entrée, pour que Claude les filtre en une commande. La console garde une version lisible.
+
+**Ce qu'on loggue :**
+- **les changements d'état**, chacun avec l'état d'avant et l'état d'après ;
+- **les décisions**, avec leur pourquoi : « cheat activé niveau 3 car… » ;
+- **les entrées et sorties des modules**, et chaque appel externe : réseau, fichiers, sauvegarde ;
+- **les erreurs**, chacune avec tout son contexte et la pile d'appels ;
+- **la durée des opérations lentes.**
+
+**On suit un événement d'un bout à l'autre** grâce à un identifiant commun :
+- la session ;
+- la partie ;
+- le message réseau. Les logs de plusieurs PC se fusionnent alors en une seule chronologie.
+
+**Les fichiers :**
+- un fichier par session, à un emplacement noté dans `docs/architecture.md` ;
+- on garde les N dernières sessions ;
+- les dernières lignes sont aussi gardées en mémoire, et écrites dans chaque rapport de crash ou de bug.
+
+**Pour les performances :**
+- le message n'est construit que si son niveau est actif ;
+- ce qui se répète à chaque image passe au niveau `Trace`, activable par catégorie.
+
+**Jamais de secret ni de donnée personnelle** dans un log : mot de passe, jeton, e-mail.
+
+**Pour un bug :**
+1. lire d'abord les logs ;
+2. si les logs ne suffisaient pas à comprendre, ajouter les logs qui ont manqué, en plus du test qui reproduit le bug ;
+3. joindre les logs à l'issue.
 
 Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.
 

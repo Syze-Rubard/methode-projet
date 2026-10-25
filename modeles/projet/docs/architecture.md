@@ -44,6 +44,17 @@ Une ligne par décision, avec son pourquoi, pour ne pas la rediscuter.
 
 `outils/verifier.ps1` lance tous ces niveaux, du plus rapide au plus lent.
 
+## Logs
+
+Règles générales : section « Logs » du skill `methode-projet`.
+
+| Point | Choix du projet |
+|---|---|
+| Module de log | {{MODULE ET SON API}} |
+| Catégories | {{UNE PAR MODULE}} |
+| Contexte de chaque ligne | {{VERSION, SESSION, AUTRES CLÉS}} |
+| Fichiers | {{EMPLACEMENT, NOMBRE DE SESSIONS GARDÉES}} |
+
 ## Définition de « fini »
 
 `outils/verifier.ps1` vert (compilation sans warning, tous les tests), essayé en vrai, diff relu, docs à jour, commit fait et poussé.

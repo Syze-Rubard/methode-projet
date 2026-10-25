@@ -48,6 +48,8 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 - Un bug corrigé commence par un test qui le reproduit. Chaque bug trouvé devient une issue GitHub, avec les étapes pour le reproduire.
 - `outils/verifier.ps1` lance toutes les vérifications. Il doit être vert avant de finir une tâche et avant chaque commit : les hooks y veillent. On y ajoute chaque nouvelle sorte de vérification.
 - Zéro warning, zéro erreur dans les logs, aucune erreur silencieuse.
+- Des logs abondants, et toujours par le module de log du projet. Ils couvrent chaque changement d'état, chaque décision avec son pourquoi, et chaque erreur avec son contexte. Les règles et l'emplacement des fichiers sont dans `docs/architecture.md`.
+- Pour un bug, lire d'abord les logs. Si les logs n'ont pas suffi à le comprendre, ajouter ceux qui ont manqué.
 - Jamais `--no-verify`, jamais un test désactivé ou affaibli pour passer.
 
 ## Carte du projet

@@ -2,6 +2,12 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-25 : logs pour retrouver un bug vite
+
+L'utilisateur veut retrouver tout bug vite, à partir des logs, et plus il y en a, mieux c'est :
+- une section « Logs » dans le skill : un seul module de log, des lignes structurées en JSON avec leur contexte, ce qu'on loggue, des identifiants pour suivre un événement d'un bout à l'autre, un fichier par session, les dernières lignes jointes aux rapports de crash ;
+- deux règles dans le modèle de CLAUDE.md, et un tableau des choix de log du projet dans `architecture.md`.
+
 ## 2026-10-25 : qualité, zéro bug
 
 Le but est un projet sans bug, donc les tests ne reposent plus sur la bonne volonté :
