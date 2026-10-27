@@ -81,7 +81,9 @@ function Confirm-GitIdentity([string]$Name, [string]$Email) {
 function Confirm-GitHubLogin {
     if (-not (Test-Command 'gh')) { return }
     if (Invoke-Quiet { gh auth status }) { Write-Status 'ok' 'connecté à GitHub'; return }
-    Add-Todo 'se connecter à GitHub : ouvrir un nouveau terminal, lancer gh auth login, puis répondre GitHub.com, HTTPS, Yes, Login with a web browser'
+    # The full path works even in a terminal opened before gh was installed, whose PATH is stale.
+    $gh = (Get-Command 'gh').Source
+    Add-Todo "se connecter à GitHub : dans un terminal PowerShell, lancer & `"$gh`" auth login, puis répondre GitHub.com, HTTPS, Yes, Login with a web browser"
 }
 
 # Follows a junction to the folder it points to.

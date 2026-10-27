@@ -7,6 +7,7 @@ Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut
 Sur le second PC, le disque de RogueHack appartenait encore au compte du premier PC. Git refusait donc ses dépôts (« dubious ownership »), et `preparer-projet.ps1` s'arrêtait dessus :
 - `preparer-projet.ps1` ajoute le dépôt du projet à `safe.directory` quand git le refuse pour cette raison, et seulement dans ce cas ;
 - `preparer-pc.ps1` fait de même pour le dépôt du skill ;
+- pour se connecter à GitHub, `preparer-pc.ps1` donne le chemin complet de `gh`. Un terminal ouvert avant l'installation ne trouvait pas la commande `gh` ;
 - une modification du skill est commitée et poussée tout de suite, sans attendre la fin de la tâche du projet, pour qu'il reste à jour sur chaque PC. L'utilisateur l'a demandé.
 
 ## 2026-10-25 : génération par IA
