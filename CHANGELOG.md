@@ -2,6 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : économiser les tokens
+
+Sur RogueHack, Claude a lancé un workflow de cinq agents pour relire un paquet tiers avant de l'installer, alors que quelques recherches ciblées suffisaient. L'utilisateur l'a arrêté et a demandé que la méthode serve aussi à économiser les tokens :
+- une sixième idée, et une section « Économiser les tokens » : un projet rangé qui se lit comme un livre ouvert, lire juste ce qu'il faut, l'effort qui suit la difficulté de la tâche, des réponses courtes ;
+- pas d'agents ni de workflows pour une tâche simple, même en mode ultracode ;
+- le modèle de CLAUDE.md le rappelle à chaque session.
+
 ## 2026-10-27 : leçons d'un service web mené des mois avec des agents
 
 L'utilisateur a demandé de reporter dans la méthode ce qu'un autre de ses projets, un service web en ligne depuis des mois et construit par de nombreux agents, a appris à ses dépens :

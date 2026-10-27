@@ -14,7 +14,7 @@
 - Petit bout par petit bout : une fonctionnalité par session, en mode plan d'abord, puis construire, tester, commiter.
 - Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.
 - Le document de conception est vivant : chaque fonctionnalité construite met à jour sa section dans la même session, et ce qui est abandonné est retiré. Il reste compact.
-- Réponses courtes et directes.
+- Réponses courtes et directes. L'effort suit la difficulté de la tâche : pas d'agents ni de workflows pour une tâche simple, même en mode ultracode (section « Économiser les tokens » du skill).
 - Français avec l'utilisateur et dans les docs, anglais dans le code et dans les fiches de mémoire.
 
 ## En fin de tâche

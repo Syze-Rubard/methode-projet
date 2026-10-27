@@ -5,12 +5,13 @@ description: Méthode de travail pro avec Claude Code, commune à tous les proje
 
 # Méthode projet
 
-Une méthode pour mener un gros projet de code avec Claude Code sans perdre en qualité ni en mémoire, que ce soit un jeu, une appli mobile, un logiciel, un site web ou un outil. Les règles valent pour tous ; ce qui change d'un type à l'autre est dans « Selon le type de projet ». Elle tient en cinq idées :
+Une méthode pour mener un gros projet de code avec Claude Code sans perdre en qualité ni en mémoire, que ce soit un jeu, une appli mobile, un logiciel, un site web ou un outil. Les règles valent pour tous ; ce qui change d'un type à l'autre est dans « Selon le type de projet ». Elle tient en six idées :
 1. **Tout ce qui compte est écrit sur le disque.** Une session neuve ne perd rien, donc on repart de zéro à chaque fonctionnalité.
 2. **Un sujet par document, sans doublon.** Chaque info a une seule place, et une carte dit laquelle.
 3. **Petit bout par petit bout.** Une fonctionnalité par session, testée et commitée avant la suivante.
 4. **Automatiser plutôt que se fier aux consignes.** Ce qui doit arriver à coup sûr passe par un hook ou un réglage.
 5. **Juste ce qu'il faut, au bon moment.** Chaque outil se met en place quand le premier code en a besoin, pas avant : le vérificateur avec le premier code, les tests de performance avec le premier écran utilisable, les tests réseau avec le premier échange réseau. Une règle qui coûte plus qu'elle ne rapporte est signalée à l'utilisateur.
+6. **Économiser les tokens.** Le projet est rangé pour que Claude y lise comme dans un livre ouvert, l'effort suit la difficulté de la tâche, et les réponses vont droit au but. Voir « Économiser les tokens ».
 
 ## Les scripts
 
@@ -324,6 +325,16 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - **`/compact`** résume la conversation au lieu de la vider. Utile au milieu d'une tâche longue, avec une consigne : `/compact garde le plan et les fichiers modifiés`.
 - **`/autocompact 300k`** déclenche la compaction automatique à 300k tokens. Plus haut, chaque message coûte cher et la précision baisse ; plus bas, on résume trop souvent.
 - La section « Compaction » de CLAUDE.md dit quoi garder quand la conversation est résumée.
+
+## Économiser les tokens
+
+Chaque token lu ou écrit coûte. La méthode sert aussi à en dépenser le moins possible, sans rien perdre en qualité.
+
+- **Un projet rangé se lit vite.** La carte dit où est chaque chose, l'index de la mémoire dit quelle fiche ouvrir, et chaque document traite un seul sujet, en restant compact. Claude va droit à la bonne section, sans tout parcourir.
+- **Lire juste ce qu'il faut** : la section utile d'un fichier plutôt que le fichier entier, une recherche ciblée plutôt qu'une lecture complète. Ne pas relire ce qu'on vient de lire ou d'écrire.
+- **L'effort suit la difficulté de la tâche.** Une question, un réglage, une installation ou une petite vérification se font seul, en quelques commandes ciblées. Les agents en parallèle et les workflows, même en mode ultracode, sont gardés pour ce qui en a vraiment besoin : un gros audit, une migration, la revue d'une grosse fonctionnalité. Par exemple, relire un paquet tiers avant de l'installer se fait par des recherches ciblées (adresses contactées, fichiers écrits, code exécuté), pas avec cinq agents. En cas de doute, demander à l'utilisateur.
+- **Des réponses courtes** : ce qui est fait, ce qui reste, la question à trancher. Pas de récit de chaque étape, ni de liste d'options qu'on ne retiendra pas.
+- **`/clear` après chaque fonctionnalité** : une conversation longue fait payer tout son historique à chaque message.
 
 ## Code
 
