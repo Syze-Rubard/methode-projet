@@ -27,5 +27,6 @@
         Test-Fait ($claudeMd -match '(?m)^@docs/README\.md' -and $claudeMd -notmatch '(?m)^\s*@\S*MEMORY\.md') "CLAUDE.md n'importe plus MEMORY.md, et importe toujours la carte"
         Test-Fait ($fix.Count -eq 0) "le contrôle passe à la fin $($fix -join ' ; ')"
         Test-Fait ((Test-Path -LiteralPath (Join-Path $Dir 'docs\memoire\MEMORY.md')) -and $others.Count -eq 0) "rien d'autre ne change, l'index de la mémoire compris $($others -join ', ')"
+        Test-Fait (Test-Pousse $Dir $Session.Reponse) "ce qui est commité est aussi poussé, ou la réponse demande s'il faut pousser"
     }
 }

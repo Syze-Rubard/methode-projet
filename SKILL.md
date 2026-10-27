@@ -28,8 +28,10 @@ Ce fichier tient l'essentiel. Le détail est dans `reference/`, à ouvrir seulem
 
 ## Démarrer, reprendre, contrôler
 
+Les trois scripts sont à la racine du dossier de ce skill, sans sous-dossier : `preparer-pc.ps1`, `preparer-projet.ps1` et `controler-projet.ps1`. Ils se lancent avec `powershell -NoProfile -ExecutionPolicy Bypass -File <script>`, le PowerShell 5.1 de Windows : `pwsh` n'est pas toujours installé.
+
 - **Démarrer un projet** : demander le nom, le pitch en une phrase, le type, la techno, la taille et le document de conception ; lancer `preparer-pc.ps1`, puis `preparer-projet.ps1` ; remplir les `{{...}}`. Un petit projet (un outil, une bibliothèque, un essai de quelques semaines) prend le chemin léger, `-Leger` : une feuille de route en trois phases. Le pas à pas est dans `reference/installation.md`.
-- **Reprendre sur un autre PC** : `preparer-pc.ps1`, récupérer le projet, `preparer-projet.ps1`, puis une nouvelle session.
+- **Reprendre sur un autre PC** : `preparer-pc.ps1` d'abord, même quand le skill répond déjà, car il vérifie ce que CE PC a (les outils, l'identité git, la connexion à GitHub) ; récupérer le projet ; `preparer-projet.ps1` ; puis dire à l'utilisateur d'ouvrir une nouvelle session : les hooks et la mémoire ne s'activent qu'au démarrage d'une session.
 - **Remettre de l'ordre, ou vérifier qu'un projet suit la méthode** : lancer `controler-projet.ps1 -Chemin <projet>` (voir « Contrôle »), puis proposer à l'utilisateur ce qui manque, du plus utile au moins utile. Rien ne s'impose : un projet qui marche ne se casse pas pour coller à la méthode.
 
 ## Le cycle d'une fonctionnalité

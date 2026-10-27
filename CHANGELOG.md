@@ -2,6 +2,20 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : ce que de vraies sessions ont trouvé
+
+Trois passages des scénarios avec de vraies sessions de Claude (Sonnet ; 0,73 $, 1,13 $, puis 0,49 $ pour trois scénarios) ont trouvé ce que les tests sans Claude ne voyaient pas :
+- **`preparer-pc.ps1` écrivait les hooks de Git LFS dans le dépôt d'où on le lançait** : sans `--skip-repo`, `git lfs install` pose ses quatre hooks dans le dépôt courant, dans `.githooks` pour un projet de la méthode. Il prend maintenant `--skip-repo`, et un test le lance depuis un dépôt pour le prouver ;
+- **la compaction choisie par l'utilisateur est respectée** : `preparer-pc.ps1` réclamait 300k, à chaque lancement, à qui avait choisi 500k. Il dit maintenant ce que la méthode conseille, sans en faire un `[à faire]` ;
+- **les scripts se lancent avec le PowerShell de Windows** : une session a d'abord essayé `pwsh`, qui n'est pas toujours installé. `SKILL.md` dit où sont les trois scripts et comment les lancer ;
+- **un script PowerShell avec des accents s'enregistre en UTF-8 avec BOM**, même jetable : une session en a écrit un sans BOM pour remplir `docs/architecture.md`, ses remplacements avec accents n'ont rien trouvé, il a écrit « Ã  » pour « à », et elle a dû recréer le fichier. L'installation le note dans ses pièges ;
+- **reprendre sur un autre PC** : une session a sauté `preparer-pc.ps1` sans le dire, et n'a pas dit qu'il fallait une nouvelle session. `SKILL.md` dit maintenant pourquoi il faut l'un et l'autre, même quand le skill répond déjà ; au passage suivant, la session a fait les deux ;
+- **une consigne d'un jour ne réécrit pas les règles du projet** : à qui disait « ne pousse rien », une session a retiré « pousser » de la fin de tâche de CLAUDE.md. Le scénario « démarrer » le vérifie maintenant ;
+- **ce qui est commité est poussé, ou la session demande s'il faut pousser** : une session a commité sans pousser en écrivant « Pas de remote configuré », sans avoir regardé. Les scénarios « contrôler » et « petite tâche » ont maintenant un dépôt distant, local au PC, et vérifient que le commit y arrive, ou que la réponse pose la question sans prétendre qu'il n'y a pas de dépôt distant ;
+- **des projets d'essai plus vrais** : une fiche projet remplie, les outils du PC dans la carte, un `verifier.ps1` qui vérifie le code. Les sessions relevaient à raison les incohérences des premiers (une étape cochée sans `verifier.ps1`, une fiche projet vide) et y passaient des tours ;
+- **les gardes des scénarios sont prouvées avant chaque passage** : `gh` ne lance que des commandes qui lisent, Claude Code lui-même lisant `gh pr view` après un commit ; un `git push` vers GitHub part vers une adresse qui n'existe pas. Le script vérifie les deux gardes avant la première session, et s'arrête si l'une ne tient pas ;
+- « une nouvelle session active les hooks et la mémoire » se cherche maintenant phrase par phrase : « je peux la remplir lors de la prochaine session » passait l'ancienne vérification.
+
 ## 2026-10-27 : un contrôle, un chemin léger, et des preuves que la méthode marche
 
 À la question « le skill est-il utile, sur 10 ? », la réponse a été 8 : il lui manquait des preuves qu'il marche, pas seulement des consignes, et un chemin pour les petits projets. Ce qu'on a ajouté :

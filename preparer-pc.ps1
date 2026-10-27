@@ -59,8 +59,10 @@ function Confirm-Tool([string]$Label, [scriptblock]$IsPresent, [string]$PackageI
 
 function Enable-GitLfs {
     if (-not (Test-GitLfs)) { return }
-    if (Invoke-Quiet { git lfs install }) { Write-Status 'ok' 'Git LFS activé pour cet utilisateur' }
-    else { Add-Todo 'activer Git LFS : git lfs install' }
+    # --skip-repo: launched from inside a repository, git lfs install also wrote its four hooks
+    # there (into .githooks for a project of the method, or the skill's own).
+    if (Invoke-Quiet { git lfs install --skip-repo }) { Write-Status 'ok' 'Git LFS activé pour cet utilisateur' }
+    else { Add-Todo 'activer Git LFS : git lfs install --skip-repo' }
 }
 
 function Get-GlobalGitValue([string]$Key) {
@@ -159,7 +161,10 @@ function Get-AutoCompactValues {
 }
 
 function Confirm-AutoCompact([int]$Tokens) {
-    if (@(Get-AutoCompactValues) -contains $Tokens) { Write-Status 'ok' "compaction automatique à $($Tokens / 1000)k tokens"; return }
+    $values = @(Get-AutoCompactValues)
+    if ($values -contains $Tokens) { Write-Status 'ok' "compaction automatique à $($Tokens / 1000)k tokens"; return }
+    # A value the user set is their choice: say what the method advises, never ask again.
+    if ($values.Count) { Write-Status 'ok' ("compaction automatique à {0}k tokens, choisie par l'utilisateur (la méthode conseille {1}k)" -f ($values[0] / 1000), ($Tokens / 1000)); return }
     Add-Todo "régler la compaction automatique : taper /autocompact $($Tokens / 1000)k dans Claude Code"
 }
 

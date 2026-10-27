@@ -74,5 +74,6 @@ Les modèles :
 
 - **Un patch de code ne passe jamais par un heredoc de Bash** : il y perd un niveau d'antislash. Passer par l'outil d'édition, ou écrire un script sur le disque et le lancer.
 - Dans un texte inséré par Bash, un backtick **s'exécute** ; dans le remplacement de `String.replace` (JavaScript), un `$` est lu comme un motif : passer une fonction.
+- **Un script PowerShell qui contient des accents s'enregistre en UTF-8 avec BOM**, même jetable : sans BOM, PowerShell 5.1 le lit en ANSI, ses textes avec accents ne trouvent plus rien à remplacer, et il écrit du charabia (« Ã  » pour « à ») dans les fichiers qu'il touche.
 - PowerShell 5.1 coupe les guillemets doubles internes d'une commande passée à un programme : pour piloter un serveur par `ssh`, préférer Git Bash avec `MSYS_NO_PATHCONV=1`.
 - Un disque peut changer de lettre d'un PC à l'autre : `preparer-projet.ps1` corrige le chemin de la mémoire ; les jonctions et les dossiers de travail qui portent la lettre se réparent à la main.

@@ -1,21 +1,23 @@
 ﻿# Starting a small project. Does Claude call the skill, take the light path, fill every placeholder,
-# tick 0.1 and commit, without a GitHub repository since the user said no?
+# tick 0.1 and commit, without a GitHub repository this time since the user said so, and without
+# turning that one-off instruction into a rule of the project?
 @{
-    Demande    = 'Je démarre un nouveau projet dans ce dossier : mets-le en place comme mes autres projets. Nom : Minuteur. Pitch : un petit outil en ligne de commande qui chronomètre des sessions de travail et les note dans un fichier. Type : outil en ligne de commande. Techno : base. Taille : petit, quelques semaines de travail. Pas de document de conception. C''est un essai : ne crée pas de dépôt GitHub et ne pousse rien.'
+    Demande    = 'Je démarre un nouveau projet dans ce dossier : mets-le en place comme mes autres projets. Nom : Minuteur. Pitch : un petit outil en ligne de commande qui chronomètre des sessions de travail et les note dans un fichier. Type : outil en ligne de commande. Techno : base. Taille : petit, quelques semaines de travail. Pas de document de conception. Pour cette fois, ne crée pas de dépôt GitHub et ne pousse rien : je le ferai plus tard.'
     PlafondUsd = 3
     Preparer   = { param($Dir) }
     Simuler    = {
         param($Dir)
-        New-PreparedProject $Dir 'Minuteur'
+        Invoke-PreparerProjet $Dir 'Minuteur'
         Set-Roadmap $Dir 'le démarrage est fait (0.1). Prochaine session : 0.2.' '0.1'
         Complete-Placeholders $Dir
         [void](Invoke-Git $Dir @('add', '-A'))
         [void](Invoke-Git $Dir @('commit', '-q', '-m', 'Démarrage du projet'))
-        New-Session -Skills 'methode-projet' -Commandes 'powershell -File preparer-pc.ps1', 'powershell -File preparer-projet.ps1 -Chemin . -Nom Minuteur -Techno base -Leger'
+        New-Session -Skills 'methode-projet' -Commandes 'powershell -File preparer-pc.ps1', 'powershell -File preparer-projet.ps1 -Chemin . -Nom Minuteur -Techno base -Leger' -Reponse 'Minuteur est en place. Les hooks et la mémoire prennent effet à la prochaine session.'
     }
     Verifier   = {
         param($Dir, $Session)
         $roadmap = Get-Text (Join-Path $Dir 'docs\feuille-de-route.md')
+        $endOfTask = if ((Get-Text (Join-Path $Dir 'CLAUDE.md')) -match '(?s)## En fin de tâche(.*?)(\n## |\z)') { $Matches[1] } else { '' }
         $left = @(Get-ChildItem -LiteralPath $Dir -Recurse -File -Filter '*.md' -ErrorAction SilentlyContinue |
             Where-Object { (Get-Text $_.FullName) -match '\{\{[^}]+\}\}' } | ForEach-Object { $_.FullName.Substring($Dir.Length + 1) })
         $remote = Invoke-Git $Dir @('remote')
@@ -29,5 +31,7 @@
         Test-Fait ((Invoke-Git $Dir @('rev-parse', '--verify', '-q', 'HEAD')).Code -eq 0) 'un premier commit est fait'
         Test-Fait ($fix.Count -eq 0) "le contrôle de la méthode passe $($fix -join ' ; ')"
         Test-Fait ($remote.Code -eq 0 -and @($remote.Lignes | Where-Object { $_ }).Count -eq 0) 'aucun dépôt distant'
+        Test-Fait ($endOfTask -match 'pousser') "CLAUDE.md garde « commiter, puis pousser » : une consigne d'un jour ne réécrit pas les règles du projet"
+        Test-Fait (Test-NouvelleSession $Session.Reponse) "la réponse dit qu'une nouvelle session active les hooks et la mémoire"
     }
 }

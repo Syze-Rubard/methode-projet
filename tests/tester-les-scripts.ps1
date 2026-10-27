@@ -107,6 +107,29 @@ Assert ($roadmapText -match '\d{4}-\d\d-\d\d : le démarrage est fait') '« Où 
 $commit = Invoke-Git $d @('commit', '-q', '-m', 'premier commit')
 Assert ($commit.Code -eq 0) "un projet neuf se commite, hooks compris $(if ($commit.Code) { $commit.Text.Trim() })"
 
+Write-Host '--- preparer-pc.ps1'
+# Launched from inside a repository (a double click in the skill's folder does it), it leaves that
+# repository as it was: git lfs install wrote its four hooks into .githooks. Played only on a PC
+# where every tool is installed, so that the test never installs anything.
+function Test-ToolsInstalled {
+    $ErrorActionPreference = 'Continue'
+    & git lfs version 2>&1 | Out-Null
+    $LASTEXITCODE -eq 0 -and [bool](Get-Command gh -ErrorAction SilentlyContinue)
+}
+if (Test-ToolsInstalled) {
+    $pcRepo = Join-Path $Work 'depot-pc'
+    [void](Invoke-Git $Work @('init', '-q', $pcRepo))
+    [void](Invoke-Git $pcRepo @('config', 'core.hooksPath', '.githooks'))
+    New-Item -ItemType Directory -Path (Join-Path $pcRepo '.githooks') | Out-Null
+    [IO.File]::WriteAllText((Join-Path $pcRepo '.githooks\pre-commit'), "#!/bin/sh`nexit 0`n")
+    Push-Location -LiteralPath $pcRepo
+    try { [void](Invoke-Ps (Join-Path $Skill 'preparer-pc.ps1')) }
+    finally { Pop-Location }
+    $pcHooks = @(Get-ChildItem -LiteralPath (Join-Path $pcRepo '.githooks') -Force | ForEach-Object Name)
+    Assert ($pcHooks.Count -eq 1) "lancé depuis un dépôt, preparer-pc.ps1 n'y écrit rien $(if ($pcHooks.Count -ne 1) { $pcHooks -join ', ' })"
+}
+else { Write-Host "[ignoré] preparer-pc.ps1 : git-lfs ou gh manque sur ce PC, et ce test n'installe rien" }
+
 Write-Host '--- controler-projet.ps1'
 $control = Join-Path $Skill 'controler-projet.ps1'
 $clean = Invoke-Ps $control @('-Chemin', $d)

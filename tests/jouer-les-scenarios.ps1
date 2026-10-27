@@ -49,11 +49,40 @@ function Invoke-Git([string]$Dir, [string[]]$Arguments) {
     }
 }
 
-# A small project, prepared the way the skill prepares one.
-function New-PreparedProject([string]$Dir, [string]$Name) {
+# preparer-projet.ps1 on a small project, as Claude launches it to start one.
+function Invoke-PreparerProjet([string]$Dir, [string]$Name) {
     $ErrorActionPreference = 'Continue'
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Skill 'preparer-projet.ps1') -Chemin $Dir -Nom $Name -Leger 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) { throw "preparer-projet.ps1 a échoué sur $Dir" }
+}
+
+# A small project as a project in use has it: prepared by the skill, with its remote (a bare
+# repository next to it, so that nothing leaves the PC) and the tools of the PC in its map.
+function New-PreparedProject([string]$Dir, [string]$Name) {
+    Invoke-PreparerProjet $Dir $Name
+    $origin = "$Dir-origine.git"
+    [void](Invoke-Git $Dir @('init', '-q', '--bare', $origin))
+    [void](Invoke-Git $Dir @('remote', 'add', 'origin', $origin))
+    $sheet = (Get-ChildItem -LiteralPath (Join-Path $Dir 'docs\memoire') -Filter 'project-*.md' | Select-Object -First 1).FullName
+    Edit-Text $sheet '{{WHAT THE PROJECT IS, IN TWO OR THREE SENTENCES}}' "$Name is a small PowerShell command-line tool. It keeps its data in plain files next to it."
+    Edit-Text $sheet "{{CURRENT STATE: what exists and what waits for the user's go-ahead; the next steps live in docs/feuille-de-route.md}}" "State ($Today): in use, nothing waits for a go-ahead; the next steps live in docs/feuille-de-route.md."
+    $map = Join-Path $Dir 'docs\README.md'
+    Edit-Text $map '{{OUTIL}}' 'PowerShell'
+    Edit-Text $map '{{VERSION}}' '5.1'
+    Edit-Text $map '{{À QUOI IL SERT}}' 'lance les scripts et la vérification'
+}
+
+# Code in src/, with its outils/verifier.ps1 made from the skill's template (each script of src
+# runs without arguments and succeeds), and both folders cited by the map.
+function Add-Code([string]$Dir, [string]$Name, [string]$Content) {
+    New-Item -ItemType Directory -Force -Path (Join-Path $Dir 'src'), (Join-Path $Dir 'outils') | Out-Null
+    Set-Text (Join-Path $Dir "src\$Name") $Content -Bom
+    $verifier = Join-Path $Dir 'outils\verifier.ps1'
+    Copy-Item -LiteralPath (Join-Path $Skill 'modeles\outils\verifier.ps1') -Destination $verifier
+    $eol = if ((Get-Text $verifier).Contains("`r`n")) { "`r`n" } else { "`n" }
+    $check = "    @{ Name = 'Scripts de src'; Run = { foreach (`$file in Get-ChildItem `"`$ProjectDir\src`" -Filter *.ps1) { & powershell.exe -NoProfile -ExecutionPolicy Bypass -File `$file.FullName | Out-Null; if (`$LASTEXITCODE -ne 0) { return } } } }"
+    Edit-Text $verifier "`$Checks = @($eol)" "`$Checks = @($eol$check$eol)"
+    Edit-Text (Join-Path $Dir 'docs\README.md') '  {{DOSSIERS DU CODE ET DES CONTENUS}}' "  outils/                   verifier.ps1 : la commande unique qui vérifie tout`n  src/                      le code"
 }
 
 # Ticks the given steps of the roadmap, and writes « Où on en est », dated today.
@@ -79,6 +108,7 @@ function Save-Start([string]$Dir) {
     $commit = Invoke-Git $Dir @('commit', '-q', '--no-verify', '-m', 'état de départ')
     if ($commit.Code -ne 0) { throw "l'état de départ ne se commite pas : $(($commit.Lignes + $commit.Erreurs) -join ' ')" }
     [void](Invoke-Git $Dir @('tag', 'depart'))
+    if ((Invoke-Git $Dir @('remote')).Lignes -contains 'origin') { [void](Invoke-Git $Dir @('push', '-q', '--no-verify', '-u', 'origin', 'main')) }
 }
 
 # The files changed since the starting state, committed or not, new ones included.
@@ -86,6 +116,19 @@ function Get-Changed([string]$Dir) {
     $tracked = (Invoke-Git $Dir @('diff', '--name-only', 'depart')).Lignes
     $new = (Invoke-Git $Dir @('ls-files', '--others', '--exclude-standard')).Lignes
     @(@($tracked) + @($new) | Where-Object { $_ } | Sort-Object -Unique)
+}
+
+# What a session commits, it pushes too when the project has a remote: the method ends each task so.
+# Asking first is fine, the user decides (« Veux-tu que je pousse vers GitHub ? »); claiming there is
+# no remote is not. On 2026-10-27, a session committed, wrote « Pas de remote configuré, donc pas de
+# push » without looking, and pushed nothing.
+function Test-Pousse([string]$Dir, [string]$Reponse) {
+    $head = "$((Invoke-Git $Dir @('rev-parse', 'HEAD')).Lignes)"
+    if ($head -eq "$((Invoke-Git $Dir @('rev-parse', 'depart')).Lignes)") { return $true }
+    $pushed = "$((Invoke-Git $Dir @('ls-remote', 'origin', 'refs/heads/main')).Lignes)" -replace '\s.*$', ''
+    if ($pushed -eq $head) { return $true }
+    $asks = @([regex]::Split($Reponse, '(?<=[.!?])\s+') | Where-Object { $_ -match '(?i)\b(pousse|push)' -and $_.TrimEnd() -match '\?$' }).Count -gt 0
+    $asks -and $Reponse -notmatch '(?i)\b(pas de|aucun|sans) (remote|dépôt distant|origin)'
 }
 
 # The [à corriger] lines of the method's control: none when the project follows the method.
@@ -105,6 +148,16 @@ function Test-Skill($Session) {
 }
 
 function Test-Commande($Session, [string]$Pattern) { @(@($Session.Commandes) -match $Pattern).Count -gt 0 }
+
+# The hooks and the memory take effect at the next session: does the answer say so, in any words? One
+# sentence must name both. « Je peux la remplir lors de la prochaine session » passed a looser check.
+function Test-NouvelleSession([string]$Reponse) {
+    $sentences = [regex]::Split($Reponse, '(?<=[.!?])\s+')
+    @($sentences | Where-Object {
+        $_ -match '(?i)(nouvelle|prochaine|autre) (session|conversation)|session (neuve|suivante)|(relance|redémarre|rouvre|rouvrir)\w* claude' -and
+        $_ -match '(?i)hooks?\b|mémoire'
+    }).Count -gt 0
+}
 
 function New-Session([string[]]$Skills = @(), [string[]]$Commandes = @(), [string]$Reponse = '', [int]$Tours = 1) {
     [pscustomobject]@{ Skills = $Skills; Commandes = $Commandes; Lectures = [string[]]@(); Reponse = $Reponse
@@ -134,17 +187,54 @@ function Clear-HostSession {
     foreach ($name in $names) { [Environment]::SetEnvironmentVariable($name, $null, 'Process') }
 }
 
-# A scenario never creates a GitHub repository nor pushes: gh only answers « auth » and « --version »,
-# which preparer-pc.ps1 asks, and logs every other call.
+# A scenario never writes to GitHub: gh runs only the commands that read (Claude Code itself reads
+# « gh pr view » after a commit) and the ones preparer-pc.ps1 asks; any other call is refused and
+# logged.
+$GhAllowed = @('auth status', 'auth setup-git', 'api user', 'pr view', 'pr list', 'pr status', 'repo view', 'issue view', 'issue list')
+
 function New-GhGuard([string]$Bin) {
     $real = "$((Get-Command gh -ErrorAction SilentlyContinue).Source)"
     New-Item -ItemType Directory -Force -Path $Bin | Out-Null
     $log = Join-Path $Bin 'gh-refus.log'
-    $cmd = "@echo off`r`nif /i `"%1`"==`"auth`" goto real`r`nif /i `"%1`"==`"--version`" goto real`r`necho gh %* >>`"$log`"`r`necho gh est desactive pendant un scenario de test 1>&2`r`nexit /b 1`r`n:real`r`n`"$real`" %*`r`n"
+    $cmdChecks = ($GhAllowed | ForEach-Object { "if /i `"%~1 %~2`"==`"$_`" goto real" }) -join "`r`n"
+    $cmd = "@echo off`r`nif /i `"%~1`"==`"--version`" goto real`r`n$cmdChecks`r`necho gh %* >>`"$log`"`r`necho gh est desactive pendant un scenario de test 1>&2`r`nexit /b 1`r`n:real`r`n`"$real`" %*`r`n"
     [IO.File]::WriteAllText((Join-Path $Bin 'gh.cmd'), $cmd)
-    $sh = "#!/bin/sh`ncase `"`$1`" in auth|--version) exec `"$($real -replace '\\', '/')`" `"`$@`" ;; esac`necho `"gh `$*`" >> `"$($log -replace '\\', '/')`"`necho 'gh est desactive pendant un scenario de test' >&2`nexit 1`n"
+    $shCases = ($GhAllowed | ForEach-Object { "`"$_`"" }) -join '|'
+    $realSh = $real -replace '\\', '/'
+    $sh = "#!/bin/sh`ncase `"`$1 `$2`" in $shCases) exec `"$realSh`" `"`$@`" ;; esac`ncase `"`$1`" in --version) exec `"$realSh`" `"`$@`" ;; esac`necho `"gh `$*`" >> `"$($log -replace '\\', '/')`"`necho 'gh est desactive pendant un scenario de test' >&2`nexit 1`n"
     [IO.File]::WriteAllText((Join-Path $Bin 'gh'), $sh)
     $log
+}
+
+# Nor pushes with git: for the sessions' git, every push to GitHub goes to an address that does not
+# exist (variables of this process alone, nothing written to a git configuration).
+function Block-GitPush {
+    $rules = @('https://github.com/', 'git@github.com:', 'ssh://git@github.com/')
+    $env:GIT_CONFIG_COUNT = "$($rules.Count)"
+    for ($i = 0; $i -lt $rules.Count; $i++) {
+        Set-Item "Env:GIT_CONFIG_KEY_$i" 'url.https://scenario.invalid/.pushInsteadOf'
+        Set-Item "Env:GIT_CONFIG_VALUE_$i" $rules[$i]
+    }
+}
+
+# The guards are checked before any session, never assumed: a push to GitHub must be rewritten to
+# nowhere, and gh must refuse a command off its list, through cmd (PowerShell, Claude Code) as
+# through Git Bash. The probe asks « gh help », harmless if a guard failed.
+function Test-Guards([string]$GhLog) {
+    $probe = Join-Path $Work 'sonde-des-gardes'
+    [void](Invoke-Git $Work @('init', '-q', $probe))
+    [void](Invoke-Git $probe @('remote', 'add', 'origin', 'https://github.com/exemple/depot.git'))
+    $push = "$((Invoke-Git $probe @('remote', 'get-url', '--push', 'origin')).Lignes)"
+    Remove-Item -Recurse -Force -LiteralPath $probe
+    if ($push -notmatch '^https://scenario\.invalid/') { throw "la garde de git push ne marche pas (adresse de push : $push)" }
+    $ErrorActionPreference = 'Continue'
+    & cmd.exe /d /c 'gh help' 2>&1 | Out-Null
+    $bash = Join-Path $env:ProgramFiles 'Git\bin\bash.exe'
+    if (Test-Path -LiteralPath $bash) { & $bash -c 'gh help' 2>&1 | Out-Null }
+    $refused = @(Get-Content -LiteralPath $GhLog -ErrorAction SilentlyContinue)
+    Remove-Item -LiteralPath $GhLog -ErrorAction SilentlyContinue
+    $expected = if (Test-Path -LiteralPath $bash) { 2 } else { 1 }
+    if ($refused.Count -ne $expected) { throw "la garde de gh ne refuse pas « gh help » ($($refused.Count) refus notés sur $expected)" }
 }
 
 function Invoke-Claude([string]$Claude, [string]$Dir, [string]$Request, [double]$Cap) {
@@ -219,9 +309,11 @@ if ($ASec) {
 else {
     $claude = Find-Claude
     Clear-HostSession
+    Block-GitPush
     $ghLog = New-GhGuard (Join-Path $Work 'bin')
     $env:PATH = (Join-Path $Work 'bin') + ';' + $env:PATH
-    Write-Output "Claude Code : $claude ; modèle $Modele ; dossier $Work"
+    Test-Guards $ghLog
+    Write-Output "Claude Code : $claude ; modèle $Modele ; dossier $Work ; gardes de git et de gh vérifiées"
     $total = 0.0
     foreach ($file in $files) {
         $scenario = & $file.FullName
