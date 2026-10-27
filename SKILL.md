@@ -28,9 +28,9 @@ Ce fichier tient l'essentiel. Le détail est dans `reference/`, à ouvrir seulem
 
 ## Démarrer, reprendre, contrôler
 
-- **Démarrer un projet** : demander le nom, le pitch en une phrase, le type, la techno et le document de conception ; lancer `preparer-pc.ps1`, puis `preparer-projet.ps1` ; remplir les `{{...}}`. Le pas à pas est dans `reference/installation.md`.
+- **Démarrer un projet** : demander le nom, le pitch en une phrase, le type, la techno, la taille et le document de conception ; lancer `preparer-pc.ps1`, puis `preparer-projet.ps1` ; remplir les `{{...}}`. Un petit projet (un outil, une bibliothèque, un essai de quelques semaines) prend le chemin léger, `-Leger` : une feuille de route en trois phases. Le pas à pas est dans `reference/installation.md`.
 - **Reprendre sur un autre PC** : `preparer-pc.ps1`, récupérer le projet, `preparer-projet.ps1`, puis une nouvelle session.
-- **Remettre de l'ordre, ou vérifier qu'un projet suit la méthode** : passer le « Contrôle » en bas de ce fichier, puis proposer à l'utilisateur ce qui manque, du plus utile au moins utile. Rien ne s'impose : un projet qui marche ne se casse pas pour coller à la méthode.
+- **Remettre de l'ordre, ou vérifier qu'un projet suit la méthode** : lancer `controler-projet.ps1 -Chemin <projet>` (voir « Contrôle »), puis proposer à l'utilisateur ce qui manque, du plus utile au moins utile. Rien ne s'impose : un projet qui marche ne se casse pas pour coller à la méthode.
 
 ## Le cycle d'une fonctionnalité
 
@@ -106,14 +106,9 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 
 ## Contrôle : un projet suit-il la méthode ?
 
-- `CLAUDE.md` et la carte tiennent sous 200 lignes, sans état ni histoire, avec la consigne de compaction ; `MEMORY.md` n'y est pas importé.
-- `MEMORY.md` tient en une cinquantaine de lignes, et chaque ligne d'état porte sa date.
-- La carte liste chaque dossier et chaque document ; la racine ne garde que ce que les outils exigent, les fichiers de travail sont dans `brouillons/`, le vieux dans `archives/`.
-- « Où on en est » est à jour et daté.
-- `.claude/settings.local.json` dirige la mémoire vers le `docs/memoire` de ce PC ; les hooks sont déclarés, et `git config core.hooksPath` vaut `.githooks`.
-- Dès qu'il y a du code : `outils/verifier.ps1` existe, passe au vert, et le `pre-commit` le lance.
-- Les trois types d'agents sont dans `.claude/agents/`.
-- Si le projet a grandi : `docs/decisions/`, `docs/pieges/` ouverts par leurs sommaires, et `.claude/rules/` (voir `reference/grand-projet.md`).
+`controler-projet.ps1 -Chemin <projet>` le vérifie, en lecture seule, et le pre-commit de chaque projet le lance (hook `garde-methode`) : le budget de ce que chaque session charge, la mémoire, les hooks, `verifier.ps1` dès qu'il y a du code, la carte, « Où on en est », la racine et les règles de `.claude/rules/`. Une ligne `[à corriger]` bloque le commit ; `[à surveiller]` est un conseil.
+
+Le script ne voit pas le reste, qui se relit à la main : un document de conception vivant, des tests qui visent le comportement, une carte qui dit vrai, une mémoire sans doublon, et, si le projet a grandi, des décisions et des pièges ouverts par leurs sommaires (voir `reference/grand-projet.md`).
 
 ## Améliorer la méthode
 
@@ -122,6 +117,7 @@ La méthode vit dans le dossier de ce skill, un dépôt git public que `preparer
 2. modifier ce fichier, une référence, les scripts ou les modèles. `SKILL.md` garde l'essentiel et reste sous 200 lignes ; le détail va dans `reference/`, un niveau de profondeur, chaque fichier ouvert par une ligne qui dit quand le lire. Un nouveau fichier commun va dans `modeles/projet/`. Une nouvelle techno va dans `modeles/techno/<techno>/` : copier `base`, puis ajouter au `.gitignore` le modèle officiel de la techno (dépôt `github/gitignore`) et au `.gitattributes` ses fichiers lourds, suivis par Git LFS ;
 3. rien d'un projet privé n'entre dans ce dépôt public : ni nom de serveur, ni chemin, ni secret ;
 4. noter le changement et son pourquoi dans `CHANGELOG.md` ;
-5. commiter tout de suite, sans attendre la fin de la tâche du projet, et pousser : le skill reste à jour sur chaque PC.
+5. commiter tout de suite, sans attendre la fin de la tâche du projet, et pousser : le skill reste à jour sur chaque PC. Le pre-commit du skill lance `tests/tester-les-scripts.ps1` : ses scripts, ses modèles, le contrôle, les hooks et les scénarios joués à sec, sur des projets jetables, sans Claude et sans token, en une minute environ ;
+6. après un changement qui touche la conduite de Claude (ce fichier, une référence, le modèle de CLAUDE.md), rejouer aussi les scénarios : `tests/jouer-les-scenarios.ps1` lance de vraies sessions de Claude (démarrer, reprendre, contrôler, une petite tâche) et vérifie ce qu'elles ont fait. Chaque session coûte des tokens : son coût s'affiche, et un plafond l'arrête. Il faut Claude Code connecté une fois dans un terminal : `claude`, puis `/login`.
 
 Les projets existants ne sont pas mis à jour d'office : proposer à l'utilisateur de reporter le changement.

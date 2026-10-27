@@ -17,8 +17,9 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
       rappel-clear.ps1      prévient quand c'est le bon moment de faire /clear
       garde-tests.ps1       empêche de finir ou de commiter du code non vérifié
       garde-secrets.ps1     empêche de commiter un secret
+      garde-methode.ps1     empêche de commiter un projet qui ne suit plus la méthode
       garde-generation-ia.ps1  empêche de générer avec une IA sans connaître son modèle
-  .githooks/                hooks git versionnés : secrets et vérification avant chaque commit
+  .githooks/                hooks git versionnés : secrets, méthode et vérification avant chaque commit
   outils/
     verifier.ps1            lance toutes les vérifications du projet (créé avec le premier code)
     perf-reference.json     mesures de performance de référence sur ce PC (non versionné)

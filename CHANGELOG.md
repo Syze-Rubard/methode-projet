@@ -2,6 +2,16 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : un contrôle, un chemin léger, et des preuves que la méthode marche
+
+À la question « le skill est-il utile, sur 10 ? », la réponse a été 8 : il lui manquait des preuves qu'il marche, pas seulement des consignes, et un chemin pour les petits projets. Ce qu'on a ajouté :
+- **`controler-projet.ps1`** vérifie, en lecture seule, qu'un projet suit toujours la méthode : le budget de ce que chaque session charge, la mémoire, les hooks, `verifier.ps1` dès qu'il y a du code, la carte, « Où on en est », la racine, les règles de `.claude/rules/`. Une ligne `[à corriger]` bloque, `[à surveiller]` conseille. Sur un projet en cours, il a trouvé `MEMORY.md` importé dans CLAUDE.md, donc chargé deux fois à chaque session ;
+- **le hook `garde-methode`** le lance avant chaque commit d'un projet, entre `garde-secrets` et `garde-tests` : un projet ne dérive plus sans qu'on le voie ;
+- **le chemin léger** : `preparer-projet.ps1 -Leger` prend les modèles de `modeles/leger/`, une feuille de route en trois phases (fondations, construction, livraison) au lieu de huit, pour un outil, une bibliothèque ou un essai de quelques semaines ;
+- **`tests/tester-les-scripts.ps1`** teste le skill lui-même, sans Claude et sans token : ses scripts, ses modèles, le contrôle et les hooks, sur des projets jetables. Le pre-commit du skill, que `preparer-pc.ps1` active, le lance avant chaque commit de la méthode ;
+- **`tests/jouer-les-scenarios.ps1`** lance de vraies sessions de Claude dans des dossiers jetables (démarrer un projet, le reprendre sur un autre PC, le contrôler, une petite tâche), et vérifie ce qu'elles ont fait : le skill lu, les commandes lancées, les fichiers laissés, le nombre de tours. Chaque session est plafonnée en dollars, `gh` y est bridé (aucune ne crée de dépôt ni ne pousse), et il faut Claude Code connecté une fois dans un terminal. `-ASec` joue chaque scénario sans Claude : ses vérifications doivent échouer sur un dossier intact et passer sur une session idéale, sinon elles ne prouvent rien. Le pre-commit du skill le joue aussi ;
+- dès son premier passage à sec, le scénario « démarrer » a trouvé un vrai défaut : sur un projet sans commit, le contrôle s'arrêtait au premier message de git sur stderr dès que « Où on en est » était daté, et `garde-methode` aurait refusé le premier commit de chaque projet neuf. Les tests ne l'avaient pas vu, car leur projet d'essai n'avait pas encore rempli « Où on en est ». Le contrôle est corrigé, et ce test date maintenant « Où on en est » avant le premier commit, comme au vrai démarrage.
+
 ## 2026-10-27 : une seule fiche projet, même sans `-Nom`
 
 `preparer-projet.ps1` nommait la fiche projet de la mémoire d'après `-Nom`, ou d'après le nom du dossier quand `-Nom` manquait. Relancé sans `-Nom`, comme le prescrit la reprise sur un autre PC, il créait donc une seconde fiche dès que le dossier ne porte pas le nom du projet : sur un essai créé avec `-Nom Essai` dans un dossier `essai-projet`, `project-essai-projet.md` est apparu à côté de `project-essai.md`. Désormais :

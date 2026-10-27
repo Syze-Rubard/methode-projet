@@ -2,12 +2,15 @@
 # Never overwrites a file, so it is safe to rerun. On a new project it creates the whole
 # structure; on an existing one (new PC, new drive letter) it only adds what is missing
 # and points the Claude Code memory at docs/memoire.
-# Usage: powershell -NoProfile -ExecutionPolicy Bypass -File preparer-projet.ps1 -Chemin <dossier> [-Nom <nom>] [-Techno base|unity]
+# -Leger: a small project (a tool, a library, a few weeks' trial) gets the light templates of
+# modeles/leger, which take the place of those of modeles/projet: a roadmap in three phases.
+# Usage: powershell -NoProfile -ExecutionPolicy Bypass -File preparer-projet.ps1 -Chemin <dossier> [-Nom <nom>] [-Techno base|unity] [-Leger]
 
 param(
     [string]$Chemin = (Get-Location).Path,
     [string]$Nom,
-    [string]$Techno = 'base'
+    [string]$Techno = 'base',
+    [switch]$Leger
 )
 
 $ErrorActionPreference = 'Stop'
@@ -71,14 +74,19 @@ function Get-SheetTarget([string]$Expected, $Sheets) {
     Join-Path 'docs\memoire' $Sheets[0].Name
 }
 
-# Lists the template files with the path each one takes in the project.
-function Get-Templates([string]$TechnoName, [string]$Name, $Sheets) {
+# Lists the template files with the path each one takes in the project. When two roots hold the
+# same path, the first one wins: the light templates come before the common ones.
+function Get-Templates([string]$TechnoName, [string]$Name, $Sheets, [bool]$Light) {
     $roots = @((Join-Path $ModelesDir 'projet'), (Join-Path $ModelesDir "techno\$TechnoName"))
+    if ($Light) { $roots = @(Join-Path $ModelesDir 'leger') + $roots }
+    $seen = @{}
     foreach ($root in $roots) {
         foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -Force -File) {
             $relative = $file.FullName.Substring($root.Length + 1) -replace '\.modele\.', '.'
             $target = Expand-Placeholders $relative $Name
             if ($relative -eq $SheetTemplate) { $target = Get-SheetTarget $target $Sheets }
+            if ($seen.ContainsKey($target)) { continue }
+            $seen[$target] = $true
             [pscustomobject]@{ Source = $file.FullName; Target = $target }
         }
     }
@@ -170,7 +178,7 @@ $sheets = @(Get-ProjectSheets $Chemin)
 if (-not $Nom) { $Nom = Find-ProjectName $Chemin $sheets }
 
 Write-Output "Projet $Nom dans $Chemin"
-$templates = @(Get-Templates $Techno $Nom $sheets)
+$templates = @(Get-Templates $Techno $Nom $sheets $Leger.IsPresent)
 Add-MissingFiles $templates $Chemin $Nom
 Set-MemoryDirectory $Chemin
 Initialize-Git $Chemin

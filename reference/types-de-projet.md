@@ -52,3 +52,5 @@ Les règles du skill valent pour tous les projets de code. Voici ce qui change d
 7. Suivi : correctifs, mises à jour et retours des utilisateurs.
 
 `docs/feuille-de-route.md` découpe ces phases en sessions. Le document de conception définit le jalon de chaque phase et son critère de passage. Ce qu'on fait à chaque jalon (tag, version profilée, exports, copie du dossier) est en tête de la feuille de route.
+
+Un petit projet (un outil, une bibliothèque, un essai de quelques semaines) prend le chemin léger, `preparer-projet.ps1 -Leger` : trois phases, fondations, construction et livraison. S'il grandit, on passe à la feuille de route complète, en gardant les cases déjà cochées.

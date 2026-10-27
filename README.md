@@ -14,4 +14,5 @@ Une façon de travailler avec Claude Code, pareille dans tous les projets de cod
 Dans Claude Code :
 - **Nouveau projet :** ouvre un dossier vide et dis « démarre un nouveau projet avec la méthode ».
 - **Projet existant, sur un nouveau PC :** ouvre son dossier et dis « reprends ce projet avec la méthode ».
+- **Vérifier un projet :** dis « vérifie que ce projet suit la méthode ». Claude lance `controler-projet.ps1` et propose ce qui manque ; avant chaque commit du projet, un hook fait le même contrôle.
 - **Améliorer la méthode :** dis « améliore la méthode : … ». Claude modifie le skill et note le changement dans `CHANGELOG.md`.

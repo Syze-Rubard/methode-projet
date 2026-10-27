@@ -1,0 +1,4 @@
+#!/bin/sh
+# Before each commit of the method: its tests that need no Claude session, no token
+# (tests/tester-les-scripts.ps1). preparer-pc.ps1 turns this hook on, on each PC.
+exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/tester-les-scripts.ps1

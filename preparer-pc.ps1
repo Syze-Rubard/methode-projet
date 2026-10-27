@@ -136,6 +136,16 @@ function Confirm-SkillLink {
     Write-Status 'installé' "skill relié à Claude Code ($link -> $skillDir)"
 }
 
+# The skill's own pre-commit runs its tests (tests/tester-les-scripts.ps1) before each commit of
+# the method, whichever session makes it.
+function Confirm-SkillHooks([string]$SkillDir) {
+    if (-not (Test-Command 'git') -or -not (Test-Path -LiteralPath (Join-Path $SkillDir '.git'))) { return }
+    $ErrorActionPreference = 'Continue'
+    if ((git -C $SkillDir config --get core.hooksPath 2>$null) -eq '.githooks') { Write-Status 'ok' 'tests du skill lancés avant chacun de ses commits'; return }
+    git -C $SkillDir config core.hooksPath .githooks
+    Write-Status 'réglé' 'tests du skill lancés avant chacun de ses commits (.githooks)'
+}
+
 function Get-AutoCompactValues {
     $settingsPath = Join-Path $HOME '.claude\settings.json'
     if (-not (Test-Path -LiteralPath $settingsPath)) { return }
@@ -167,6 +177,7 @@ Confirm-GitIdentity $NomGit $EmailGit
 Confirm-GitHubLogin
 Confirm-SkillLink
 Confirm-SafeDirectory (Get-RealPath $PSScriptRoot)
+Confirm-SkillHooks (Get-RealPath $PSScriptRoot)
 Confirm-AutoCompact $AutoCompactTokens
 
 if ($script:TodoCount -eq 0) { Write-Output 'PC prêt pour la méthode.' }

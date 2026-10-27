@@ -4,3 +4,4 @@
 
 # Git hooks run under sh, which needs LF line endings
 modeles/projet/.githooks/* text eol=lf
+.githooks/* text eol=lf
