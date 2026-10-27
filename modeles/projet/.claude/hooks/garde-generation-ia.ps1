@@ -79,7 +79,7 @@ function Get-Refusal([string[]]$Problems) {
         "1. Renseigne-toi sur ce modèle (recherche web, puis lecture des pages) : d'abord les guides officiels de son éditeur, puis ceux de la communauté (Reddit, Discord, tutoriels de créateurs reconnus), qui ont souvent les meilleures astuces. Cherche la forme de prompt qu'il préfère, ses forces et faiblesses, ses paramètres, le rôle des images de référence.`n" +
         "2. Écris ou mets à jour sa fiche d'après docs/generation-ia/modeles/_modele.md, avec la date du jour sur la ligne « Vérifiée le » et les sources lues, officielles et communautaires.`n" +
         "3. Écris le prompt selon cette fiche et docs/generation-ia/style.md, puis relance la génération.`n" +
-        "Méthode complète : section « Génération par IA » du skill methode-projet."
+        "Méthode complète : reference/generation-ia.md du skill methode-projet."
     $styleWritten = (Test-Path -LiteralPath $StylePath) -and
         -not ([IO.File]::ReadAllText($StylePath, [Text.Encoding]::UTF8).Contains('<bloc de style>'))
     if (-not $styleWritten) {

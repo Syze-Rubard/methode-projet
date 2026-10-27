@@ -33,6 +33,7 @@ Une astuce par ligne, avec sa source, et son résultat une fois essayée sur le 
 - **Bon pour :** <…>
 - **À éviter pour :** <…>
 - **Coût :** <crédits par génération, d'après l'estimation de l'outil>
+- **Droits de la formule :** <usage commercial permis ou non, crédit obligatoire, territoires exclus, seuil de revenus> ; ils nourrissent l'avertissement « ⚠⚠ Contenu généré par IA »
 
 ## Prompt qui a marché
 

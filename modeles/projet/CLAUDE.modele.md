@@ -4,8 +4,8 @@
 
 ## En début de session
 
-1. La carte du projet et l'index de la mémoire sont chargés en bas de ce fichier. Lire dans `docs/memoire/` les fiches utiles à la tâche.
-2. La prochaine étape est la première case non cochée de `docs/feuille-de-route.md`.
+1. La carte du projet est chargée en bas de ce fichier, et l'index de la mémoire par la mémoire automatique. Lire dans `docs/memoire/` seulement les fiches utiles à la tâche.
+2. « Où on en est », dans `docs/feuille-de-route.md`, dit où on en est. La prochaine étape est la première case non cochée.
 3. Pour toute question de conception, {{DOCUMENT DE CONCEPTION ET SON LIEN}} fait foi.
 4. Avant d'écrire du code, lire `docs/architecture.md`.
 
@@ -14,26 +14,28 @@
 - Petit bout par petit bout : une fonctionnalité par session, en mode plan d'abord, puis construire, tester, commiter.
 - Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.
 - Le document de conception est vivant : chaque fonctionnalité construite met à jour sa section dans la même session, et ce qui est abandonné est retiré. Il reste compact.
-- Réponses courtes et directes. L'effort suit la difficulté de la tâche : pas d'agents ni de workflows pour une tâche simple, même en mode ultracode (section « Économiser les tokens » du skill).
+- Réponses courtes et directes : ce qui est fait, ce qui reste, la question à trancher.
+- L'effort suit la difficulté de la tâche. Seul par défaut ; un sous-agent du bon type (`leger`, `moyen` ou `haut`, dans `.claude/agents/`) quand le travail le demande ; jamais de workflow pour une tâche simple, même en mode ultracode.
+- Lire juste ce qu'il faut : la section utile, une recherche ciblée, jamais un gros fichier en entier.
 - Français avec l'utilisateur et dans les docs, anglais dans le code et dans les fiches de mémoire.
 
 ## En fin de tâche
 
 Une tâche n'est finie qu'après ces étapes :
 1. `outils/verifier.ps1` au vert, la fonctionnalité essayée en vrai, et le diff relu avec `/code-review`.
-2. Mettre à jour chaque document concerné par le changement, d'après le tableau « Qui tient quoi à jour » de la carte, et cocher la case de la feuille de route.
+2. Mettre à jour chaque document concerné, d'après le tableau « Qui tient quoi à jour » de la carte, cocher la case de la feuille de route et réécrire « Où on en est ».
 3. Commiter, puis pousser vers GitHub.
 4. Si la fonctionnalité est terminée, dire à l'utilisateur que c'est le bon moment pour `/clear`. Le hook `rappel-clear` le lui rappelle aussi.
 
 ## Mémoire
 
-- La mémoire du projet vit dans `docs/memoire/` et voyage avec le disque et le dépôt git.
-- Sur chaque PC, `.claude/settings.local.json` (non versionné) y dirige la mémoire automatique de Claude Code avec le réglage `autoMemoryDirectory`. Le script `preparer-projet.ps1` du skill le crée, et corrige le chemin si le disque change de lettre.
-- Toute info durable (décision, préférence, état du projet) y est ajoutée : une fiche par sujet et une ligne dans `MEMORY.md`. On met à jour une fiche existante plutôt que d'en créer une en double.
+- La mémoire du projet vit dans `docs/memoire/` et voyage avec le disque et le dépôt git. Sur chaque PC, `.claude/settings.local.json` (non versionné) y dirige la mémoire automatique (`autoMemoryDirectory`) ; `preparer-projet.ps1` le crée.
+- `MEMORY.md` est chargé à chaque session : une ligne par fiche, une cinquantaine de lignes au plus. Il ne s'importe jamais dans ce fichier : il serait chargé deux fois.
+- Toute info durable (décision, préférence, état du projet) y entre : une fiche par sujet, mise à jour plutôt que dupliquée. Une ligne qui décrit un état porte la date de sa mesure.
 
 ## Compaction
 
-Quand la conversation est résumée, garder : la tâche en cours et son plan, les décisions prises et leur pourquoi, les fichiers créés ou modifiés, les erreurs rencontrées et leur correction, ce qui reste à faire. Laisser de côté le contenu des fichiers et les longues sorties d'outils : on peut les relire.
+Quand la conversation est résumée, garder : la tâche en cours et son plan, les décisions prises et leur pourquoi, les fichiers créés ou modifiés, les erreurs rencontrées et leur correction, ce qui reste à faire, et l'identifiant de tout travail lancé en fond. Laisser de côté le contenu des fichiers et les longues sorties d'outils : on peut les relire.
 
 ## Code, en résumé (détails dans `docs/architecture.md`)
 
@@ -49,7 +51,9 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 
 - Tests d'abord : chaque brique de logique a ses tests, écrits avant le code.
 - Un bug corrigé commence par un test qui le reproduit. Chaque bug trouvé devient une issue GitHub, avec les étapes pour le reproduire.
-- `outils/verifier.ps1` lance toutes les vérifications. Il doit être vert avant de finir une tâche et avant chaque commit : les hooks y veillent. On y ajoute chaque nouvelle sorte de vérification.
+- Le geste des trente secondes : après une correction, remettre le défaut un instant et voir le test échouer. Un test vert sur la version fautive ne protège de rien.
+- Un test vise le comportement, jamais une ligne recopiée. Un test qui vérifie une absence prouve qu'il a lu quelque chose.
+- `outils/verifier.ps1` lance toutes les vérifications, en entier. Il doit être vert avant de finir une tâche et avant chaque commit : les hooks y veillent. On y ajoute chaque nouvelle sorte de vérification.
 - Zéro warning, zéro erreur dans les logs, aucune erreur silencieuse.
 - Des logs abondants, et toujours par le module de log du projet. Ils couvrent chaque changement d'état, chaque décision avec son pourquoi, et chaque erreur avec son contexte. Les règles et l'emplacement des fichiers sont dans `docs/architecture.md`.
 - Pour un bug, lire d'abord les logs. Si les logs n'ont pas suffi à le comprendre, ajouter ceux qui ont manqué.
@@ -59,26 +63,20 @@ Quand la conversation est résumée, garder : la tâche en cours et son plan, le
 
 - Rien de ce qu'on ajoute ne doit ralentir le programme. Un ralentissement est un bug.
 - Les budgets chiffrés sont dans `docs/architecture.md`. Les tests de performance de `outils/verifier.ps1` échouent au-delà du budget du PC de développement, ou si une mesure régresse de plus de 10 %.
-- Chaque plan dit ce que la fonctionnalité coûte en performance. On mesure avant d'optimiser.
+- Chaque plan dit ce que la fonctionnalité coûte en performance. On mesure avant d'optimiser, et une mesure s'écrit avec sa machine, son paramètre et sa date.
 - Dans le code chaud, c'est-à-dire ce qui tourne à chaque image, à chaque requête ou pour chaque élément d'une longue liste : aucune allocation, des références en cache, des pools d'objets, des événements plutôt que des vérifications répétées.
 
 ## Sécurité et droits
 
-- Aucun secret dans le dépôt ni dans ce qui est livré : ils vivent dans un fichier ignoré par git. Le hook `pre-commit` bloque un commit qui en contient un. Claude ne saisit jamais un secret.
+- Aucun secret dans le dépôt ni dans ce qui est livré : ils vivent dans un fichier ignoré par git. Le hook `pre-commit` bloque un commit qui en contient un. Claude ne saisit ni n'affiche jamais un secret.
 - Toute donnée qui entre (fichier chargé, message réseau) est validée à la frontière, et ne fait jamais planter.
 - Dépendances de sources connues, en version fixée, mises à jour une à la fois.
-- Chaque contenu externe ou généré par IA a sa ligne dans `docs/licences.md`, ajoutée dans la même session que lui.
+- Licences : Claude ne tient pas de registre, il avertit. Un contenu externe, une licence inconnue ou copyleft, une marque d'autrui : « ⚠ » en une ligne, au moment où ça arrive. Un contenu généré par IA destiné au produit : l'avertissement renforcé « ⚠⚠ », en entier (déclaration aux boutiques, droits de la formule, protection, trace). Le texte des avertissements est dans le skill, `reference/securite-et-droits.md`.
 
-## Génération par IA (détails dans le skill, section « Génération par IA »)
+## Génération par IA
 
-- Avant de générer une image, une vidéo, un modèle 3D ou un son, lire la fiche du modèle dans `docs/generation-ia/modeles/`. Si elle manque ou a plus de 60 jours, se renseigner d'abord dans les guides officiels de l'éditeur, puis dans ceux de la communauté (Reddit, Discord, tutoriels), et l'écrire. Le hook `garde-generation-ia` refuse la génération sinon.
-- Tout contenu destiné au produit part de la bible de style `docs/generation-ia/style.md` et de ses images de référence.
-- Estimer le coût avant de lancer, et noter dans la fiche du modèle le prompt qui a marché.
+- Avant de générer, la fiche à jour du modèle dans `docs/generation-ia/modeles/` (le hook `garde-generation-ia` l'exige), la bible de style `docs/generation-ia/style.md`, et le coût dit avant une série. Détails dans le skill, `reference/generation-ia.md`.
 
 ## Carte du projet
 
 @docs/README.md
-
-## Index de la mémoire (fiches dans docs/memoire/)
-
-@docs/memoire/MEMORY.md

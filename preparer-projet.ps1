@@ -72,8 +72,8 @@ function Add-MissingFiles($Templates, [string]$ProjectDir, [string]$Name) {
     if ($kept) { Write-Status 'ok' "$kept fichier(s) déjà présent(s), laissé(s) tels quels" }
 }
 
-# autoMemoryDirectory is only read from the local settings, which git does not track,
-# so every PC needs this file, with the path of the project on that PC.
+# autoMemoryDirectory must be an absolute path, which differs from one PC to another
+# (the disk letter changes), so it lives in the local settings, which git does not track.
 function Set-MemoryDirectory([string]$ProjectDir) {
     $settingsPath = Join-Path $ProjectDir '.claude\settings.local.json'
     $memoryPath = (Join-Path $ProjectDir 'docs\memoire') -replace '\\', '/'

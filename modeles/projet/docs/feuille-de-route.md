@@ -17,6 +17,8 @@ Les étapes du projet, de l'état actuel au lancement, dans l'ordre où on les c
 
 ## Où on en est
 
+Réécrit à la fin de chaque session, jamais allongé : c'est la première chose qu'on lit en reprenant. L'histoire est dans `git log`.
+
 {{DATE}} : {{CE QUI EST FINI}}. Prochaine session : {{ÉTAPE}}.
 
 ## Phase 0 : fondations
@@ -44,7 +46,7 @@ Les étapes du projet, de l'état actuel au lancement, dans l'ordre où on les c
 En parallèle du prototype.
 
 - [ ] **2.1 Identité visuelle.** Ambiance, palette, typographies, logo. Le résultat va dans {{DOCUMENT DE CONCEPTION}}.
-- [ ] **2.2 Chaîne des contenus.** De l'outil de création au projet : nommage, format, export, et la ligne dans `licences.md`. Essayée sur un premier contenu.
+- [ ] **2.2 Chaîne des contenus.** De l'outil de création au projet : nommage, format, export, et l'avertissement de licence (« ⚠⚠ » pour un contenu généré par IA). Essayée sur un premier contenu.
 - [ ] **2.3 Nom définitif**, vérifié : libre, et sans marque d'autrui.
 - [ ] **2.4 Comptes de publication.** L'utilisateur crée les comptes et paie lui-même les frais.
 - [ ] **2.5 Page de présentation** en ligne, pour récolter des personnes intéressées.

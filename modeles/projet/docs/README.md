@@ -1,6 +1,6 @@
 # Carte du projet {{NOM}}
 
-Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charge à chaque session. Elle est mise à jour dans la même session dès qu'un dossier ou un document est ajouté, déplacé ou supprimé.
+Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charge à chaque session et dans chaque sous-agent : elle reste sous 80 lignes, et ne raconte aucune histoire. Elle est mise à jour dans la même session dès qu'un dossier ou un document est ajouté, déplacé ou supprimé.
 
 ## Dans le dossier
 
@@ -12,6 +12,7 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
   .claude/
     settings.json           hooks du projet (versionné)
     settings.local.json     réglages propres à ce PC, dont le chemin de la mémoire (non versionné)
+    agents/                 trois types d'agents, un par niveau d'effort : leger, moyen, haut
     hooks/
       rappel-clear.ps1      prévient quand c'est le bon moment de faire /clear
       garde-tests.ps1       empêche de finir ou de commiter du code non vérifié
@@ -25,7 +26,6 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
     README.md               cette carte
     architecture.md         principes de code, structure, conventions, décisions techniques
     feuille-de-route.md     les étapes du projet jusqu'au lancement, et où on en est
-    licences.md             licence de chaque contenu externe ou généré par IA
     generation-ia/
       style.md              bible de style pour les IA génératives
       modeles/              une fiche par modèle d'IA : comment lui parler (modèle : _modele.md)
@@ -60,7 +60,6 @@ Un sujet par document, sans doublon.
 | Principes, structure et conventions du code | [architecture.md](architecture.md) | un module, un dossier de code ou une convention change |
 | Décisions techniques | [architecture.md](architecture.md) | une décision technique est prise |
 | Étapes du projet et avancement | [feuille-de-route.md](feuille-de-route.md) | une étape est finie, ajoutée ou déplacée |
-| Licences des contenus | [licences.md](licences.md) | un contenu externe ou généré par IA entre dans le projet |
 | Style des contenus générés par IA | [generation-ia/style.md](generation-ia/style.md) | une décision de style est prise |
 | Façon de parler à chaque modèle d'IA | [generation-ia/modeles/](generation-ia/modeles/_modele.md) | avant d'utiliser un modèle sans fiche, ou dont la fiche a plus de 60 jours |
 | Dossiers et documents | cette carte | on en ajoute, en déplace ou en supprime un |

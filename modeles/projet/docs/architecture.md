@@ -2,7 +2,7 @@
 
 Ce document évolue avec le code.
 
-Type de projet : {{JEU, APPLI MOBILE, LOGICIEL DE BUREAU, SITE OU SERVICE WEB, OUTIL OU BIBLIOTHÈQUE}}. Les sections « Tests et qualité », « Performance » et « Sécurité » en découlent, d'après la section « Selon le type de projet » du skill `methode-projet`.
+Type de projet : {{JEU, APPLI MOBILE, LOGICIEL DE BUREAU, SITE OU SERVICE WEB, OUTIL OU BIBLIOTHÈQUE}}. Les sections « Tests et qualité », « Performance » et « Sécurité » en découlent, d'après `reference/types-de-projet.md` du skill `methode-projet`.
 
 ## Principes
 
@@ -48,7 +48,7 @@ Une ligne par décision, avec son pourquoi, pour ne pas la rediscuter.
 
 ## Logs
 
-Règles générales : section « Logs » du skill `methode-projet`.
+Règles générales : `reference/qualite.md`, partie 3, du skill `methode-projet`.
 
 | Point | Choix du projet |
 |---|---|
@@ -59,7 +59,7 @@ Règles générales : section « Logs » du skill `methode-projet`.
 
 ## Performance
 
-Règles générales : section « Performance » du skill `methode-projet`.
+Règles générales : `reference/qualite.md`, partie 4, du skill `methode-projet`.
 
 | Budget | Appareil minimal | PC de développement | Mesuré par |
 |---|---|---|---|
@@ -76,7 +76,7 @@ Mesures à chaque jalon :
 
 ## Sécurité
 
-Règles générales : section « Sécurité » du skill `methode-projet`.
+Règles générales : `reference/securite-et-droits.md` du skill `methode-projet`.
 
 | Point | Choix du projet |
 |---|---|

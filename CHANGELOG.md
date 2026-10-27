@@ -2,6 +2,17 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : un skill court, le détail à la demande
+
+L'utilisateur veut que la méthode serve d'abord à avoir le meilleur projet possible, avec le moins de tokens possible, sans trop en faire. Un skill appelé reste dans le contexte jusqu'à la fin de la session, et seul son début survit à une compaction : à 416 lignes (40 Ko), il coûtait cher et son essentiel risquait d'être coupé. Ce qu'on a changé, d'après la documentation de Claude Code et les leçons d'un service web mené des mois par de nombreux agents :
+- **`SKILL.md` garde l'essentiel**, en 127 lignes (14 Ko au lieu de 40) : les six idées, le cycle, la vérification, les tokens, les documents, la mémoire, le contexte, un contrôle de conformité, l'amélioration de la méthode. Le détail passe dans `reference/` (installation, qualité, sécurité et droits, génération par IA, types de projet), un niveau de profondeur, chaque fichier ouvert par une ligne qui dit quand le lire. Un script a vérifié qu'aucune ligne de l'ancienne version ne s'est perdue sans le vouloir ;
+- **`reference/grand-projet.md`**, neuf : ce qui se charge à chaque session et son budget, le rangement, les décisions, les invariants, les pièges par domaine et les règles `.claude/rules/` à `paths:` qui les font lire au bon moment, l'état courant réécrit plutôt qu'allongé, les sessions en parallèle, l'effort des agents, la production. À lire quand le projet grandit, pas avant ;
+- **`MEMORY.md` n'est plus importé dans CLAUDE.md** : la mémoire automatique le charge déjà à chaque session, il l'était donc deux fois. La documentation de Claude Code le confirme ;
+- **trois types d'agents dans les modèles** (`.claude/agents/leger.md`, `moyen.md`, `haut.md`), chacun avec son champ `effort` : c'est la seule façon de régler l'effort d'un sous-agent, et l'utilisateur veut que l'effort suive la difficulté de chaque tâche ;
+- **les licences deviennent des avertissements** : l'utilisateur ne veut pas que Claude tienne un registre ni bloque un contenu. Claude prévient d'une ligne (« ⚠ ») pour un contenu externe, une licence inconnue ou copyleft, des crédits, une marque d'autrui ; pour un contenu généré par IA destiné au produit, un avertissement renforcé (« ⚠⚠ ») rappelle la déclaration aux boutiques comme Steam, les droits de la formule, la protection et la trace à garder. `docs/licences.md` n'est plus créé d'office, seulement si l'utilisateur veut garder la trace ;
+- des budgets écrits : CLAUDE.md et la carte sous 200 lignes, la carte sous 80, `MEMORY.md` une cinquantaine de lignes ; pas d'histoire dans une carte, un index ou un sommaire ; « Où on en est » réécrit à chaque session ;
+- le modèle de CLAUDE.md gagne le geste des trente secondes, la mesure qui porte sa machine, son paramètre et sa date, et l'identifiant des travaux en fond dans la consigne de compaction ; la fiche d'un modèle d'IA note les droits de sa formule.
+
 ## 2026-10-27 : économiser les tokens
 
 Sur RogueHack, Claude a lancé un workflow de cinq agents pour relire un paquet tiers avant de l'installer, alors que quelques recherches ciblées suffisaient. L'utilisateur l'a arrêté et a demandé que la méthode serve aussi à économiser les tokens :
