@@ -91,7 +91,19 @@ function Invoke-Git([string]$ProjectDir, [string[]]$Arguments) {
     if ($LASTEXITCODE -ne 0) { throw "git $($Arguments -join ' ') a échoué (code $LASTEXITCODE)" }
 }
 
+# A drive moved from another PC still belongs to that PC's account, and git refuses its
+# repos ("dubious ownership") until they are listed in safe.directory.
+function Confirm-SafeDirectory([string]$RepoDir) {
+    if (-not (Test-Path -LiteralPath (Join-Path $RepoDir '.git'))) { return }
+    $ErrorActionPreference = 'Continue'
+    $output = git -C $RepoDir rev-parse --git-dir 2>&1 | Out-String
+    if ($LASTEXITCODE -eq 0 -or $output -notmatch 'safe\.directory') { return }
+    git config --global --add safe.directory ($RepoDir -replace '\\', '/')
+    Write-Status 'réglé' "git accepte ce dépôt venu d'un autre PC (safe.directory)"
+}
+
 function Initialize-Git([string]$ProjectDir) {
+    Confirm-SafeDirectory $ProjectDir
     if (Test-Path -LiteralPath (Join-Path $ProjectDir '.git')) { Write-Status 'ok' 'dépôt git déjà là' }
     else { Invoke-Git $ProjectDir @('init', '-b', 'main'); Write-Status 'créé' 'dépôt git (branche main)' }
     # Set before Git LFS, so LFS writes its hooks next to the versioned pre-commit hook.

@@ -18,7 +18,8 @@ Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powers
 
 - **`preparer-pc.ps1`**, une fois par PC :
   - il installe avec winget ce qui manque (git, Git LFS, GitHub CLI) et active Git LFS ;
-  - il relie le skill à Claude Code et vérifie la compaction automatique.
+  - il relie le skill à Claude Code et vérifie la compaction automatique ;
+  - si le skill est sur un disque venu d'un autre PC, il le fait accepter par git (`safe.directory`).
 
   Avant de le lancer, prévenir l'utilisateur que Windows peut lui demander d'autoriser une installation. Puis l'aider sur chaque `[à faire]` :
   - **identité git** : lui demander un nom et un e-mail, puis relancer avec `-NomGit` et `-EmailGit`. Si un dépôt peut devenir public, proposer l'adresse « noreply » de GitHub ;
@@ -30,6 +31,7 @@ Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powers
   - il copie les modèles sans écraser un fichier existant ;
   - il dirige la mémoire de Claude Code vers `docs/memoire`, et corrige le chemin si le disque a changé de lettre ;
   - il initialise git, avec LFS si la techno en a besoin ;
+  - si le dépôt est sur un disque venu d'un autre PC, il le fait accepter par git (`safe.directory`) : sinon git le refuse, car ses dossiers appartiennent au compte de l'autre PC ;
   - il liste les `{{...}}` qui restent à remplir.
 
 Les modèles :
@@ -389,6 +391,6 @@ Les règles ci-dessus valent pour tous les projets de code. Voici ce qui change 
 La méthode vit dans le dossier de ce skill, un dépôt git que `preparer-pc.ps1` relie à `~/.claude/skills/methode-projet`. Quand une façon de travailler s'améliore sur un projet :
 1. modifier ce fichier, les scripts ou les modèles. Un nouveau fichier commun va dans `modeles/projet/`. Une nouvelle techno va dans `modeles/techno/<techno>/` : copier `base`, puis ajouter au `.gitignore` le modèle officiel de la techno (dépôt `github/gitignore`) et au `.gitattributes` ses fichiers lourds, suivis par Git LFS ;
 2. noter le changement et son pourquoi dans `CHANGELOG.md` ;
-3. commiter, et pousser si le dépôt a un remote.
+3. commiter tout de suite, sans attendre la fin de la tâche du projet, et pousser si le dépôt a un remote : le skill reste à jour sur chaque PC.
 
 Les projets existants ne sont pas mis à jour d'office : proposer à l'utilisateur de reporter le changement.

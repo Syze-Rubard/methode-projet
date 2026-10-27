@@ -2,6 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : disque venu d'un autre PC
+
+Sur le second PC, le disque de RogueHack appartenait encore au compte du premier PC. Git refusait donc ses dépôts (« dubious ownership »), et `preparer-projet.ps1` s'arrêtait dessus :
+- `preparer-projet.ps1` ajoute le dépôt du projet à `safe.directory` quand git le refuse pour cette raison, et seulement dans ce cas ;
+- `preparer-pc.ps1` fait de même pour le dépôt du skill ;
+- une modification du skill est commitée et poussée tout de suite, sans attendre la fin de la tâche du projet, pour qu'il reste à jour sur chaque PC. L'utilisateur l'a demandé.
+
 ## 2026-10-25 : génération par IA
 
 Un modèle d'IA générative donne de bien meilleurs résultats quand on lui parle comme son éditeur le conseille, et chaque modèle a sa façon. L'utilisateur veut que Claude se renseigne toujours avant de générer :

@@ -91,6 +91,17 @@ function Get-RealPath([string]$Path) {
     $item.FullName.TrimEnd('\')
 }
 
+# A drive moved from another PC still belongs to that PC's account, and git refuses its
+# repos ("dubious ownership") until they are listed in safe.directory.
+function Confirm-SafeDirectory([string]$RepoDir) {
+    if (-not (Test-Command 'git') -or -not (Test-Path -LiteralPath (Join-Path $RepoDir '.git'))) { return }
+    $ErrorActionPreference = 'Continue'
+    $output = git -C $RepoDir rev-parse --git-dir 2>&1 | Out-String
+    if ($LASTEXITCODE -eq 0 -or $output -notmatch 'safe\.directory') { return }
+    git config --global --add safe.directory ($RepoDir -replace '\\', '/')
+    Write-Status 'réglé' "git accepte le dépôt du skill venu d'un autre PC (safe.directory)"
+}
+
 function Confirm-SkillLink {
     $skillsDir = Join-Path $HOME '.claude\skills'
     $link = Join-Path $skillsDir 'methode-projet'
@@ -138,6 +149,7 @@ Confirm-Tool 'GitHub CLI' { Test-Command 'gh' } 'GitHub.cli'
 Confirm-GitIdentity $NomGit $EmailGit
 Confirm-GitHubLogin
 Confirm-SkillLink
+Confirm-SafeDirectory (Get-RealPath $PSScriptRoot)
 Confirm-AutoCompact $AutoCompactTokens
 
 if ($script:TodoCount -eq 0) { Write-Output 'PC prêt pour la méthode.' }
