@@ -78,9 +78,24 @@ function Confirm-GitIdentity([string]$Name, [string]$Email) {
     Add-Todo "identité git : donner à Claude un nom et un e-mail, il relance ce script avec -NomGit et -EmailGit"
 }
 
+function Get-GitHubAccount {
+    $ErrorActionPreference = 'Continue'
+    gh api user --jq .login 2>$null
+}
+
+# Makes git push with the account gh is logged into, not with older saved credentials.
+function Confirm-GitUsesGitHubCli {
+    if (Invoke-Quiet { gh auth setup-git }) { return }
+    Add-Todo 'faire passer git par GitHub CLI : gh auth setup-git'
+}
+
 function Confirm-GitHubLogin {
     if (-not (Test-Command 'gh')) { return }
-    if (Invoke-Quiet { gh auth status }) { Write-Status 'ok' 'connecté à GitHub'; return }
+    if (Invoke-Quiet { gh auth status }) {
+        Confirm-GitUsesGitHubCli
+        Write-Status 'ok' "connecté à GitHub avec le compte $(Get-GitHubAccount), que git utilise aussi"
+        return
+    }
     # The full path works even in a terminal opened before gh was installed, whose PATH is stale.
     $gh = (Get-Command 'gh').Source
     Add-Todo "se connecter à GitHub : dans un terminal PowerShell, lancer & `"$gh`" auth login, puis répondre GitHub.com, HTTPS, Yes, Login with a web browser"

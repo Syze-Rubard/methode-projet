@@ -23,7 +23,7 @@ Deux scripts du dossier de ce skill font l'installation. Les lancer avec `powers
 
   Avant de le lancer, prévenir l'utilisateur que Windows peut lui demander d'autoriser une installation. Puis l'aider sur chaque `[à faire]` :
   - **identité git** : lui demander un nom et un e-mail, puis relancer avec `-NomGit` et `-EmailGit`. Si un dépôt peut devenir public, proposer l'adresse « noreply » de GitHub ;
-  - **connexion à GitHub** : `gh auth login`, lancé par l'utilisateur, jamais par Claude. Le script donne le chemin complet de `gh`, qui marche aussi dans un terminal ouvert avant l'installation ;
+  - **connexion à GitHub** : `gh auth login`, lancé par l'utilisateur, jamais par Claude. Le script donne le chemin complet de `gh`, qui marche aussi dans un terminal ouvert avant l'installation. Une fois connecté, il fait passer git par ce compte et l'affiche : vérifier avec l'utilisateur que c'est bien celui qui possède ses dépôts. Sinon, il se reconnecte au bon compte dans le navigateur, relance `gh auth login`, puis `gh auth switch` ;
   - **compaction** : `/autocompact 300k`, que l'utilisateur tape lui-même.
 
   Relancer le script jusqu'à ce qu'il ne reste rien à faire.
