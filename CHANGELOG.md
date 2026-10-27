@@ -2,6 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : une seule fiche projet, même sans `-Nom`
+
+`preparer-projet.ps1` nommait la fiche projet de la mémoire d'après `-Nom`, ou d'après le nom du dossier quand `-Nom` manquait. Relancé sans `-Nom`, comme le prescrit la reprise sur un autre PC, il créait donc une seconde fiche dès que le dossier ne porte pas le nom du projet : sur un essai créé avec `-Nom Essai` dans un dossier `essai-projet`, `project-essai-projet.md` est apparu à côté de `project-essai.md`. Désormais :
+- sans `-Nom`, le script reprend le nom du projet dans le titre de `CLAUDE.md` (« # <NOM> : instructions pour Claude »), sinon dans le nom de sa fiche projet, sinon dans le nom du dossier. La commande `gh repo create` qu'il propose porte donc aussi le bon nom ;
+- il ne crée jamais la fiche projet quand `docs/memoire` contient déjà un `project-*.md`, même sous un autre nom ou avec un autre `-Nom` ;
+- un projet qui a déjà deux fiches les fusionne à la main : le script n'en supprime aucune.
+
 ## 2026-10-27 : un skill court, le détail à la demande
 
 L'utilisateur veut que la méthode serve d'abord à avoir le meilleur projet possible, avec le moins de tokens possible, sans trop en faire. Un skill appelé reste dans le contexte jusqu'à la fin de la session, et seul son début survit à une compaction : à 416 lignes (40 Ko), il coûtait cher et son essentiel risquait d'être coupé. Ce qu'on a changé, d'après la documentation de Claude Code et les leçons d'un service web mené des mois par de nombreux agents :

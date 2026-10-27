@@ -15,6 +15,7 @@ $ErrorActionPreference = 'Stop'
 
 $ModelesDir = Join-Path $PSScriptRoot 'modeles'
 $PlaceholderPattern = '\{\{[^}]+\}\}'
+$SheetTemplate = 'docs\memoire\project-{{nom}}.md'
 
 function Write-Status([string]$State, [string]$Text) {
     Write-Output ("[{0}] {1}" -f $State, $Text)
@@ -45,13 +46,40 @@ function Assert-Techno([string]$Name) {
     throw "Techno inconnue : $Name. Disponibles : $available"
 }
 
+# The project sheets the memory already holds (docs\memoire\project-*.md).
+function Get-ProjectSheets([string]$ProjectDir) {
+    $memoryDir = Join-Path $ProjectDir 'docs\memoire'
+    if (Test-Path -LiteralPath $memoryDir) { Get-ChildItem -LiteralPath $memoryDir -File -Filter 'project-*.md' | Sort-Object Name }
+}
+
+# Without -Nom, the name the project was created with, which its folder may not bear: the title
+# of CLAUDE.md, else the slug of its project sheet when it has a single one, else the folder name.
+function Find-ProjectName([string]$ProjectDir, $Sheets) {
+    $claudeMd = Join-Path $ProjectDir 'CLAUDE.md'
+    if (Test-Path -LiteralPath $claudeMd) {
+        $title = Get-Content -LiteralPath $claudeMd -TotalCount 1 -Encoding UTF8
+        if ($title -match '^#\s+(.+?)\s*:\s*instructions pour Claude\s*$') { return $Matches[1] }
+    }
+    if ($Sheets.Count -eq 1) { return $Sheets[0].BaseName.Substring('project-'.Length) }
+    Split-Path -Leaf $ProjectDir
+}
+
+# A project has a single project sheet: when the memory already holds one under another name,
+# the sheet template points to it, so that a rerun never adds a second one.
+function Get-SheetTarget([string]$Expected, $Sheets) {
+    if (-not $Sheets -or $Sheets.Name -contains (Split-Path -Leaf $Expected)) { return $Expected }
+    Join-Path 'docs\memoire' $Sheets[0].Name
+}
+
 # Lists the template files with the path each one takes in the project.
-function Get-Templates([string]$TechnoName, [string]$Name) {
+function Get-Templates([string]$TechnoName, [string]$Name, $Sheets) {
     $roots = @((Join-Path $ModelesDir 'projet'), (Join-Path $ModelesDir "techno\$TechnoName"))
     foreach ($root in $roots) {
         foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -Force -File) {
             $relative = $file.FullName.Substring($root.Length + 1) -replace '\.modele\.', '.'
-            [pscustomobject]@{ Source = $file.FullName; Target = Expand-Placeholders $relative $Name }
+            $target = Expand-Placeholders $relative $Name
+            if ($relative -eq $SheetTemplate) { $target = Get-SheetTarget $target $Sheets }
+            [pscustomobject]@{ Source = $file.FullName; Target = $target }
         }
     }
 }
@@ -138,10 +166,11 @@ function Show-Placeholders($Templates, [string]$ProjectDir) {
 Assert-Techno $Techno
 New-Item -ItemType Directory -Force -Path $Chemin | Out-Null
 $Chemin = (Resolve-Path -LiteralPath $Chemin).Path.TrimEnd('\')
-if (-not $Nom) { $Nom = Split-Path -Leaf $Chemin }
+$sheets = @(Get-ProjectSheets $Chemin)
+if (-not $Nom) { $Nom = Find-ProjectName $Chemin $sheets }
 
 Write-Output "Projet $Nom dans $Chemin"
-$templates = @(Get-Templates $Techno $Nom)
+$templates = @(Get-Templates $Techno $Nom $sheets)
 Add-MissingFiles $templates $Chemin $Nom
 Set-MemoryDirectory $Chemin
 Initialize-Git $Chemin
