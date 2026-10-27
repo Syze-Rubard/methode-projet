@@ -2,6 +2,17 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-27 : leçons d'un service web mené des mois avec des agents
+
+L'utilisateur a demandé de reporter dans la méthode ce qu'un autre de ses projets, un service web en ligne depuis des mois et construit par de nombreux agents, a appris à ses dépens :
+- **le geste des trente secondes** : remettre le défaut et voir le test échouer. Sur ce projet, des dizaines de tests étaient verts sur la version fautive, et quelques-uns faisaient passer le défaut pour voulu ;
+- un test vise le comportement, pas une ligne recopiée : une dizaine de fois, un test a échoué sur du code juste, seulement parce qu'il avait été réécrit ;
+- un test d'absence prouve qu'il a lu quelque chose ;
+- une mesure porte sa machine, son paramètre et sa date : deux fois le même jour, une mesure juste a mené à une conclusion fausse, une fois parce qu'il y avait deux bases « de production », une fois à cause d'un filtre mal réglé ;
+- comparer deux versions en alternant, et se méfier de ce qu'un système annonce savoir faire ;
+- une ligne de mémoire qui décrit un état porte sa date : plusieurs fois, une ligne périmée a survécu et a découragé de vérifier ;
+- `docs/decisions/` et `docs/pieges/`, quand le projet grandit : un choix qui n'existe que dans un commentaire a été défait par l'agent suivant.
+
 ## 2026-10-27 : disque venu d'un autre PC
 
 Sur le second PC, le disque de RogueHack appartenait encore au compte du premier PC. Git refusait donc ses dépôts (« dubious ownership »), et `preparer-projet.ps1` s'arrêtait dessus :

@@ -88,6 +88,9 @@ Le but est un projet sans bug. Chaque moyen ci-dessous attrape des bugs que les 
 **À chaque changement :**
 - **Tests d'abord** pour chaque brique de logique. Un test décrit un comportement, pas le code.
 - **Un bug corrigé commence par un test** qui le reproduit et échoue. La correction le fait passer, et le bug ne revient plus.
+- **Le geste des trente secondes** : après une correction, remettre le défaut un instant, vérifier que le test échoue, puis restaurer. Un test qui reste vert sur la version fautive ne protège de rien, et peut même faire passer le défaut pour voulu.
+- **Un test vise le comportement, jamais une ligne de code recopiée mot pour mot** : il échouerait le jour où on réécrit la ligne sans en changer le sens.
+- **Un test qui vérifie une absence** (« aucun fichier ne contient X ») vérifie aussi qu'il a bien lu des fichiers : sinon il est vert sur le vide.
 - **Toute la suite de tests**, pas seulement ceux du jour. C'est elle qui voit ce qu'un changement casse ailleurs.
 - **Les données testées comme le code** : un test charge chaque fichier de données et vérifie ses références et ses bornes.
 - **Zéro warning et zéro erreur dans les logs.** Un warning toléré en cache un autre.
@@ -169,7 +172,10 @@ Rien de ce qu'on ajoute ne doit faire ramer le programme. Un ralentissement est 
 
 **Mesurer, pas deviner :**
 - on profile avant d'optimiser, et on optimise là où la mesure le montre ;
-- les vrais chiffres se prennent sur la version livrée (build de production), sur l'appareil minimal : l'éditeur, le mode debug et un PC puissant les faussent.
+- les vrais chiffres se prennent sur la version livrée (build de production), sur l'appareil minimal : l'éditeur, le mode debug et un PC puissant les faussent ;
+- une mesure s'écrit avec la machine, le paramètre qui l'a produite et sa date : « 461 éléments, filtre année ≥ 2026, base de test, 27/10 » se relit et se conteste, « 461 éléments » non. Une mesure juste, prise sur la mauvaise machine ou avec le mauvais réglage, mène à une conclusion fausse sans que rien ne cloche dans le relevé ;
+- deux versions se comparent en alternant, dans la même fenêtre de temps, et un écart plus petit que la dispersion d'une même version ne compte pas ;
+- ce qu'un système annonce savoir faire n'est pas une mesure : on essaie en vrai.
 
 **Tests de performance automatiques**, dans `outils/verifier.ps1`, après les autres tests :
 - des scénarios de pire cas, joués quelques secondes chacun ;
@@ -296,6 +302,8 @@ Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleu
 | `docs/architecture.md` | Principes de code, structure, conventions, décisions techniques avec leur pourquoi | Mise à jour quand un module, une convention ou une décision change |
 | `docs/feuille-de-route.md` | Les étapes jusqu'au lancement, une case par session, regroupées par phase, et « Où on en est » | Case cochée à la fin de sa session. Les phases lointaines restent en grands blocs, découpées en sessions juste avant de les commencer |
 | `docs/memoire/` | Mémoire de Claude : index `MEMORY.md`, une fiche par sujet | Voir « Mémoire » |
+| `docs/decisions/` | Quand les décisions débordent d'`architecture.md` : un fichier par choix, `AAAA-MM-JJ-sujet.md`, avec son pourquoi | Jamais supprimé ni renommé : une décision plus récente le remplace. Une décision qui n'existe que dans un commentaire sera défaite par le prochain agent |
+| `docs/pieges/` | Quand le projet grandit : un fichier par domaine (base de données, interface, réseau…), ouvert par son sommaire. Chaque entrée est une leçon payée cher, avec sa date et son chiffre | Une entrée ajoutée dès qu'un piège coûte du temps. On lit le sommaire du domaine avant d'y toucher |
 | `docs/licences.md` | Licence de chaque contenu externe ou généré par IA | Une ligne ajoutée dans la même session que le contenu |
 | `docs/generation-ia/` | La bible de style (`style.md`) et une fiche par modèle d'IA générative (`modeles/`) | Voir « Génération par IA » |
 | Document de conception | Le design, source de vérité | Document vivant : mis à jour à chaque fonctionnalité ou décision, compact, ce qui est abandonné est retiré |
@@ -307,6 +315,7 @@ Si le document de conception est un Claude Doc, chaque passe de modifs est marqu
 - La mémoire vit dans le projet (`docs/memoire/`) et se versionne avec lui : elle suit le disque, le dépôt et chaque PC.
 - `.claude/settings.local.json` contient `"autoMemoryDirectory": "<chemin absolu>/docs/memoire"` : la mémoire automatique de Claude Code écrit directement là, sans copie. Claude Code ignore ce réglage dans `settings.json`, d'où le fichier local, que `preparer-projet.ps1` crée sur chaque PC et corrige si le disque change de lettre.
 - Une fiche par sujet (frontmatter `name`, `description`, `metadata.type` : user, feedback, project ou reference), une ligne par fiche dans `MEMORY.md`. Mettre à jour plutôt que dupliquer, et ne pas recopier ce que CLAUDE.md ou le code disent déjà.
+- Une ligne qui décrit un état (un compte, une taille, où on en est) porte la date de sa mesure : elle se périme, et sans date personne ne pense à la vérifier.
 - Fiches en anglais, docs en français.
 
 ## Contexte : /clear et compaction
