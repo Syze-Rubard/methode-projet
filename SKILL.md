@@ -88,7 +88,7 @@ Chaque token lu ou écrit coûte. La méthode sert aussi à en dépenser le moin
 | Document de conception | Le design, source de vérité | Document vivant : mis à jour à chaque fonctionnalité ou décision, compact, ce qui est abandonné est retiré |
 | `docs/decisions/`, `docs/pieges/`, `.claude/rules/` | Quand le projet grandit : les choix datés, les leçons payées cher par domaine, et les règles qui les font lire au bon moment | Voir `reference/grand-projet.md` |
 
-Si le document de conception est un Claude Doc, chaque passe de modifs est marquée : surlignage dans le texte, cellules bleues `#e7f1fb` dans les tableaux. Les marques précédentes sont retirées quand l'utilisateur dit avoir relu.
+Le document de conception vit de préférence dans le dépôt, en Markdown sous `docs/`. Claude le lit par section et le modifie directement, depuis n'importe quel PC et n'importe quel compte, sans jamais donner de texte à coller. Chaque passe de modifs est listée en tête du document, sous « Dernière passe », jusqu'à ce que l'utilisateur dise l'avoir relue ; git garde le détail. Un Claude Doc reste possible, mais les outils Docs n'atteignent pas un doc partagé depuis un autre compte. Dans un Claude Doc, chaque passe est marquée : surlignage dans le texte, cellules bleues `#e7f1fb` dans les tableaux, marques retirées après relecture.
 
 ## Mémoire
 
