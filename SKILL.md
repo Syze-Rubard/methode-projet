@@ -47,7 +47,7 @@ Les trois scripts sont à la racine du dossier de ce skill, sans sous-dossier : 
    - mettre à jour chaque document concerné, d'après le tableau « Qui tient quoi à jour » de la carte ;
    - cocher la case de la feuille de route, et réécrire « Où on en est » ;
    - ajouter à la mémoire toute info durable (décision, préférence, état du projet) ;
-   - commiter, puis pousser.
+   - commiter, puis pousser, sans demander : c'est la sauvegarde du projet, accordée une fois pour toutes. Seule une consigne contraire de l'utilisateur, pour une tâche, l'emporte, et elle ne réécrit pas les règles du projet.
 6. **`/clear`** : le hook `rappel-clear` prévient l'utilisateur après un commit, ou quand le contexte dépasse 150k tokens.
 
 Aucune phase de production ne démarre sans le feu vert explicite de l'utilisateur.

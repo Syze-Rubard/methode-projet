@@ -2,6 +2,14 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-10-28 : pousser sans demander
+
+En fin de tâche, une session a commité, puis demandé « Veux-tu que je pousse vers GitHub ? » : Claude Code demande d'habitude avant de pousser, sauf accord écrit une fois pour toutes. L'utilisateur a répondu que Claude doit pousser d'office dans ses projets :
+- le modèle de CLAUDE.md et `SKILL.md` disent « commiter, puis pousser, sans demander » : c'est la sauvegarde du projet, accordée une fois pour toutes. Seule une consigne contraire de l'utilisateur, pour une tâche, l'emporte, et elle ne réécrit pas les règles du projet ;
+- les scénarios « contrôler » et « petite tâche » exigent maintenant le commit et l'envoi, sans rien laisser de non commité : une question à la place échoue ;
+- un projet existant garde l'ancienne ligne tant qu'on ne reporte pas la nouvelle dans son CLAUDE.md ;
+- `tests/jouer-les-scenarios.ps1` trouve Claude Code dans la nouvelle disposition de l'application de bureau (`claude-code\<version>\<build>\claude.exe`, depuis la 2.1.284) : sa mise à jour de la nuit avait effacé l'ancien dossier.
+
 ## 2026-10-27 : ce que de vraies sessions ont trouvé
 
 Trois passages des scénarios avec de vraies sessions de Claude (Sonnet ; 0,73 $, 1,13 $, puis 0,49 $ pour trois scénarios) ont trouvé ce que les tests sans Claude ne voyaient pas :

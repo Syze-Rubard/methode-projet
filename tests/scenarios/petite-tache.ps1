@@ -26,6 +26,6 @@
         Test-Fait (Test-Commande $Session 'verifier\.ps1') 'outils/verifier.ps1 est lancé'
         Test-Fait ($outside.Count -eq 0) "rien d'autre n'est touché : ni document, ni mémoire, ni réglage $($outside -join ', ')"
         Test-Fait ($Session.Tours -ge 1 -and $Session.Tours -le 15) "une petite tâche reste petite : $($Session.Tours) tour(s), 15 au plus"
-        Test-Fait (Test-Pousse $Dir $Session.Reponse) "ce qui est commité est aussi poussé, ou la réponse demande s'il faut pousser"
+        Test-Fait (Test-CommitPousse $Dir) 'la correction est commitée et poussée, sans demander'
     }
 }

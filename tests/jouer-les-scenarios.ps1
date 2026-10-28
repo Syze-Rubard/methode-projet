@@ -118,17 +118,15 @@ function Get-Changed([string]$Dir) {
     @(@($tracked) + @($new) | Where-Object { $_ } | Sort-Object -Unique)
 }
 
-# What a session commits, it pushes too when the project has a remote: the method ends each task so.
-# Asking first is fine, the user decides (« Veux-tu que je pousse vers GitHub ? »); claiming there is
-# no remote is not. On 2026-10-27, a session committed, wrote « Pas de remote configuré, donc pas de
-# push » without looking, and pushed nothing.
-function Test-Pousse([string]$Dir, [string]$Reponse) {
+# A task ends with a commit, pushed without asking: the user decided so for all their projects on
+# 2026-10-28. Before that, on 2026-10-27, a session committed and wrote « Pas de remote configuré »
+# without looking, and another asked « Veux-tu que je pousse vers GitHub ? ». Nothing tracked is left
+# uncommitted.
+function Test-CommitPousse([string]$Dir) {
     $head = "$((Invoke-Git $Dir @('rev-parse', 'HEAD')).Lignes)"
-    if ($head -eq "$((Invoke-Git $Dir @('rev-parse', 'depart')).Lignes)") { return $true }
     $pushed = "$((Invoke-Git $Dir @('ls-remote', 'origin', 'refs/heads/main')).Lignes)" -replace '\s.*$', ''
-    if ($pushed -eq $head) { return $true }
-    $asks = @([regex]::Split($Reponse, '(?<=[.!?])\s+') | Where-Object { $_ -match '(?i)\b(pousse|push)' -and $_.TrimEnd() -match '\?$' }).Count -gt 0
-    $asks -and $Reponse -notmatch '(?i)\b(pas de|aucun|sans) (remote|dépôt distant|origin)'
+    $pending = @((Invoke-Git $Dir @('status', '--porcelain', '--untracked-files=no')).Lignes | Where-Object { $_ })
+    $head -ne "$((Invoke-Git $Dir @('rev-parse', 'depart')).Lignes)" -and $pushed -eq $head -and $pending.Count -eq 0
 }
 
 # The [à corriger] lines of the method's control: none when the project follows the method.
@@ -169,10 +167,13 @@ function New-Session([string[]]$Skills = @(), [string[]]$Commandes = @(), [strin
 function Find-Claude {
     $command = Get-Command claude -ErrorAction SilentlyContinue
     if ($command) { return $command.Source }
-    # The desktop app ships its own Claude Code, one folder per version.
+    # The desktop app ships its own Claude Code, one folder per version: <version>\claude.exe, or, since
+    # 2.1.284, <version>\<build>\claude.exe. An update removes the older folders.
     $bundled = Get-ChildItem (Join-Path $env:APPDATA 'Claude\claude-code') -Directory -ErrorAction SilentlyContinue |
         Sort-Object { [version]($_.Name -replace '[^\d.]', '') } -Descending |
-        ForEach-Object { Join-Path $_.FullName 'claude.exe' } | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+        ForEach-Object { Get-ChildItem -LiteralPath $_.FullName -Filter 'claude.exe' -File -Recurse -Depth 1 -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName } |
+        Select-Object -First 1
     if ($bundled) { return $bundled }
     throw "Claude Code introuvable : ni « claude » dans le PATH, ni la copie de l'application de bureau."
 }

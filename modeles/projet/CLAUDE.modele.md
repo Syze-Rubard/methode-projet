@@ -24,7 +24,7 @@
 Une tâche n'est finie qu'après ces étapes :
 1. `outils/verifier.ps1` au vert, la fonctionnalité essayée en vrai, et le diff relu avec `/code-review`.
 2. Mettre à jour chaque document concerné, d'après le tableau « Qui tient quoi à jour » de la carte, cocher la case de la feuille de route et réécrire « Où on en est ».
-3. Commiter, puis pousser vers GitHub. Le pre-commit vérifie aussi que le projet suit toujours la méthode : une ligne « à corriger » se corrige, jamais ne se contourne.
+3. Commiter, puis pousser vers GitHub, sans demander : c'est la sauvegarde du projet, et l'utilisateur l'a accordé une fois pour toutes. Seule une consigne contraire de sa part, pour une tâche, l'emporte. Le pre-commit vérifie aussi que le projet suit toujours la méthode : une ligne « à corriger » se corrige, jamais ne se contourne.
 4. Si la fonctionnalité est terminée, dire à l'utilisateur que c'est le bon moment pour `/clear`. Le hook `rappel-clear` le lui rappelle aussi.
 
 ## Mémoire
