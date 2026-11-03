@@ -10,6 +10,10 @@ Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleu
   - D'abord les guides officiels de l'éditeur. Beaucoup de docs ont un `llms.txt`.
   - Puis les guides de la communauté : le subreddit du modèle, son Discord, les tutoriels de créateurs reconnus. Ils ont souvent les meilleures astuces, que la doc ne donne pas.
   - Chaque astuce de la communauté entre dans la fiche avec sa source, et son résultat une fois essayée sur le projet. En cas de désaccord, la doc officielle fait foi jusqu'à ce qu'un essai donne raison à la communauté.
+- Choisir un modèle d'après un classement à l'aveugle indépendant, avant tout essai payant : [top3d.ai](https://www.top3d.ai/leaderboard) pour la 3D (géométrie, low-poly, découpage en pièces, UV, texture), Artificial Analysis pour l'image, la vidéo et la voix, LMArena pour l'image.
+  - Lire la dernière saison terminée plutôt que celle en cours, qui a peu de votes : quelques dizaines de points d'écart ne départagent pas deux modèles qui ont chacun moins de quelques centaines de votes.
+  - Un comparatif écrit par un vendeur pèse peu.
+  - Un essai payant ne tranche que ce que la recherche n'a pas tranché, sur le plus petit échantillon : l'utilisateur ne veut pas gaspiller de crédits.
 - Tout contenu destiné au produit part de la bible de style `docs/generation-ia/style.md`. Elle est écrite avec l'utilisateur pendant la phase d'identité visuelle, avant la première génération pour le produit. Les essais d'exploration peuvent la précéder.
 - Estimer le coût quand l'outil le permet, et le dire à l'utilisateur avant une série.
 
@@ -37,7 +41,7 @@ Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleu
 
 ## Outils, par besoin
 
-État au 25/10/2026 ; la fiche du modèle fait foi.
+État au 04/11/2026 ; la fiche du modèle fait foi.
 
 | Besoin | Point de départ | Guide officiel |
 |---|---|---|
@@ -46,7 +50,7 @@ Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleu
 | Vectoriel, icônes, interface | Recraft | [Recraft](https://www.recraft.ai/docs/api-reference/models/recraft-v4) |
 | Recherche de direction artistique | Midjourney (références de style, moodboards) | [Midjourney](https://updates.midjourney.com/) |
 | Vidéo | Kling, Veo (Gemini), Seedance, Hailuo, Runway | [Kling](https://kling.ai/quickstart/klingai-video-3-model-user-guide), [Google](https://ai.google.dev/gemini-api/docs/video), [MiniMax](https://platform.minimax.io/docs/guides/video-generation), [Runway](https://docs.dev.runwayml.com/guides/models/) |
-| Modèle 3D | Meshy, Tripo, Rodin ; Hunyuan3D en local, licence restreinte | [Meshy](https://docs.meshy.ai/en/webapp/text-to-3d), [Tripo par Scenario](https://help.scenario.com/articles/4692888910-tripo-family-the-complete-guide) |
+| Modèle 3D | Tripo (P2 en low-poly, v3.1 en géométrie : les cinq couronnes de top3d.ai en octobre 2026), Meshy, Rodin ; Hunyuan3D exclut l'Union européenne | [Meshy](https://docs.meshy.ai/en/webapp/text-to-3d), [Tripo par Scenario](https://help.scenario.com/articles/4692888910-tripo-family-the-complete-guide) |
 | Voix, bruitages | ElevenLabs | [voix](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices), [bruitages](https://elevenlabs.io/docs/overview/capabilities/sound-effects) |
 | Musique | Suno, Lyria (Gemini) | [Suno](https://help.suno.com/en/articles/13924481), [Google](https://ai.google.dev/gemini-api/docs/interactions/music-generation) |
 | Un style maison en volume | Scenario, Krea, ComfyUI en local | [Scenario](https://docs.scenario.com/), [Krea](https://www.krea.ai/docs/), [ComfyUI](https://docs.comfy.org/) |
@@ -54,4 +58,4 @@ Une image, une vidéo, un modèle 3D ou un son généré par IA est bien meilleu
 ## Droits
 
 - Chaque contenu généré destiné au produit reçoit l'avertissement renforcé « ⚠⚠ Contenu généré par IA » de `securite-et-droits.md` : la déclaration aux boutiques, les droits de la formule, la protection, la trace.
-- Les droits changent d'un modèle et d'une formule d'abonnement à l'autre : usage commercial, crédit obligatoire, territoires, seuils de revenus. La fiche du modèle les note. Au 25/10/2026, par exemple : les formules gratuites d'ElevenLabs et de Suno sont non commerciales, celle de Meshy oblige à créditer (CC BY 4.0), et la licence de Hunyuan3D 2.1 exclut l'Union européenne, le Royaume-Uni et la Corée du Sud.
+- Les droits changent d'un modèle et d'une formule d'abonnement à l'autre : usage commercial, crédit obligatoire, territoires, seuils de revenus. La fiche du modèle les note. Au 25/10/2026, par exemple : les formules gratuites d'ElevenLabs et de Suno sont non commerciales, celle de Meshy oblige à créditer (CC BY 4.0), et la licence de Hunyuan3D 2.1 exclut l'Union européenne, le Royaume-Uni et la Corée du Sud, y compris par un service hébergé.

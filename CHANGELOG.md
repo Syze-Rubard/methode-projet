@@ -2,6 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-11-04 : choisir un modèle d'IA sans gaspiller de crédits
+
+Pour choisir le modèle 3D de RogueHack, l'utilisateur a refusé de payer un essai comparatif de quatre modèles (environ 105 crédits) : il fallait d'abord chercher. Les comparatifs trouvés en ligne étaient presque tous écrits par des vendeurs. Puis l'utilisateur a signalé top3d.ai, un classement par votes à l'aveugle, en saisons mensuelles et en cinq catégories :
+- `reference/generation-ia.md` fait partir le choix d'un modèle d'un classement à l'aveugle indépendant, avant tout essai payant. Il lit la saison terminée plutôt que celle en cours, donne peu de poids aux comparatifs des vendeurs, et réduit l'essai payant à ce que la recherche n'a pas tranché ;
+- la fiche modèle (`_modele.md`) gagne une ligne « Classement » ;
+- le tableau des outils met Tripo en tête pour la 3D (les cinq couronnes de top3d.ai en octobre 2026). La licence de Hunyuan3D exclut l'Union européenne même par un service hébergé.
+
 ## 2026-10-28 : pousser sans demander
 
 En fin de tâche, une session a commité, puis demandé « Veux-tu que je pousse vers GitHub ? » : Claude Code demande d'habitude avant de pousser, sauf accord écrit une fois pour toutes. L'utilisateur a répondu que Claude doit pousser d'office dans ses projets :
