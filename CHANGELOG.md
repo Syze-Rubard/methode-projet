@@ -2,6 +2,10 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-11-04 : les sources d'art hors de la vérification
+
+Sur RogueHack, des sous-agents modélisent dans Blender pendant que la session principale code. Leurs fichiers (`.blend`, renders, modèles générés) changeaient l'empreinte du projet : chaque commit de code redemandait la vérification complète, et une vérification en cours échouait dès qu'un render s'écrivait. `garde-tests.ps1` laisse maintenant de côté le dossier `sources-art/` à la racine, comme `docs/` : les vérifications ne lisent jamais ces sources. Les modèles exportés pour le moteur, eux, restent dans le projet et dans l'empreinte.
+
 ## 2026-11-04 : choisir un modèle d'IA sans gaspiller de crédits
 
 Pour choisir le modèle 3D de RogueHack, l'utilisateur a refusé de payer un essai comparatif de quatre modèles (environ 105 crédits) : il fallait d'abord chercher. Les comparatifs trouvés en ligne étaient presque tous écrits par des vendeurs. Puis l'utilisateur a signalé top3d.ai, un classement par votes à l'aveugle, en saisons mensuelles et en cinq catégories :

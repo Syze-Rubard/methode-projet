@@ -16,8 +16,9 @@ $ErrorActionPreference = 'Stop'
 $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $VerifierPath = Join-Path $ProjectDir 'outils\verifier.ps1'
 
-# Top-level entries left out of the fingerprint: editing them never breaks the code.
-$IgnoredEntryPattern = "`t(docs|[^/]+\.md)$"
+# Top-level entries left out of the fingerprint: editing them never breaks the code. sources-art holds art
+# sources (.blend files, generation outputs) that the checks never read.
+$IgnoredEntryPattern = "`t(docs|sources-art|[^/]+\.md)$"
 
 function Invoke-Git([string[]]$Arguments) {
     $ErrorActionPreference = 'Continue'
