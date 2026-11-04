@@ -74,7 +74,7 @@ $d = $project.Dir
 Assert ($project.Run.Code -eq 0) "un projet neuf se prépare (code $($project.Run.Code))"
 $expected = @('CLAUDE.md', '.gitignore', '.gitattributes', '.githooks\pre-commit', '.claude\settings.json', '.claude\settings.local.json',
     '.claude\hooks\garde-methode.ps1', '.claude\hooks\garde-secrets.ps1', '.claude\hooks\garde-tests.ps1', '.claude\hooks\rappel-clear.ps1',
-    '.claude\hooks\garde-generation-ia.ps1', '.claude\agents\leger.md', '.claude\agents\moyen.md', '.claude\agents\haut.md',
+    '.claude\hooks\garde-generation-ia.ps1', '.claude\hooks\sources-verifiees.ps1', '.claude\agents\leger.md', '.claude\agents\moyen.md', '.claude\agents\haut.md',
     'docs\README.md', 'docs\architecture.md', 'docs\feuille-de-route.md', 'docs\memoire\MEMORY.md', 'docs\memoire\project-essai.md')
 $missing = @($expected | Where-Object { -not (Test-Path -LiteralPath (Join-Path $d $_)) })
 Assert ($missing.Count -eq 0) "les $($expected.Count) fichiers attendus sont là $($missing -join ', ')"
@@ -190,6 +190,25 @@ Assert ((Invoke-Ps (Join-Path $hooks 'garde-secrets.ps1')).Code -eq 0) 'garde-se
 
 $stop = Invoke-Ps (Join-Path $hooks 'garde-tests.ps1') @() '{"stop_hook_active":false}'
 Assert ($stop.Code -eq 0 -and $stop.Text.Trim() -eq '') "garde-tests laisse finir tant que le projet n'a pas de verifier.ps1"
+
+# The fingerprint, in a repository that holds only the hook and a verifier: of sources-art, only the
+# files listed in sources-verifiees.ps1 count. Committed without hooks, so nothing records a state.
+$print = Join-Path $Work 'empreinte'
+$printHooks = Join-Path $print '.claude\hooks'
+New-Item -ItemType Directory -Path $printHooks, (Join-Path $print 'outils'), (Join-Path $print 'sources-art\palette') | Out-Null
+Copy-Item -LiteralPath (Join-Path $Skill 'modeles\projet\.claude\hooks\garde-tests.ps1') -Destination $printHooks
+[IO.File]::WriteAllText((Join-Path $printHooks 'sources-verifiees.ps1'), "`$CheckedSources = @(':(glob)sources-art/palette/*.json')`n")
+[IO.File]::WriteAllText((Join-Path $print 'outils\verifier.ps1'), "exit 0`n")
+[IO.File]::WriteAllText((Join-Path $print 'sources-art\palette\couleurs.json'), "{}`n")
+[IO.File]::WriteAllText((Join-Path $print 'sources-art\modele.blend'), "a`n")
+[void](Invoke-Git $print @('init', '-q'))
+[void](Invoke-Git $print @('add', '-A'))
+[void](Invoke-Git $print @('-c', 'core.hooksPath=.git/hooks', 'commit', '-q', '-m', 'depart'))
+function Test-PrintBlocks { (Invoke-Ps (Join-Path $printHooks 'garde-tests.ps1') @() '{"stop_hook_active":false}').Text -match '"decision":"block"' }
+[IO.File]::WriteAllText((Join-Path $print 'sources-art\modele.blend'), "b`n")
+Assert (-not (Test-PrintBlocks)) "garde-tests laisse finir après le changement d'une source d'art non listée"
+[IO.File]::WriteAllText((Join-Path $print 'sources-art\palette\couleurs.json'), "{ }`n")
+Assert (Test-PrintBlocks) 'garde-tests renvoie au travail après le changement d''une source listée dans sources-verifiees.ps1'
 
 $generation = '{"tool_name":"mcp__essai__generate_image","tool_input":{"model":"flux-2-pro","prompt":"un chat"}}'
 $refused = Invoke-Ps (Join-Path $hooks 'garde-generation-ia.ps1') @() $generation

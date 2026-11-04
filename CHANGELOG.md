@@ -2,9 +2,13 @@
 
 Chaque amélioration de la méthode, avec son pourquoi. La plus récente en haut.
 
+## 2026-11-04 : les sources que les tests lisent restent dans l'empreinte
+
+Sur RogueHack, les tests lisent deux sortes de fichiers de `sources-art/` : la palette en JSON et le rapport d'habillage de chaque arène. Hors de l'empreinte, un changement de palette passait le commit sans vérification. Ces fichiers sont maintenant listés une seule fois, en chemins git (`:(glob)…`), dans `.claude/hooks/sources-verifiees.ps1` : `garde-tests.ps1` les garde dans l'empreinte, et le `verifier.ps1` du projet relit la même liste pour voir si l'un d'eux change pendant la vérification. Dans le modèle, la liste est vide : un projet l'ajuste quand ses tests lisent une source.
+
 ## 2026-11-04 : les sources d'art hors de la vérification
 
-Sur RogueHack, des sous-agents modélisent dans Blender pendant que la session principale code. Leurs fichiers (`.blend`, renders, modèles générés) changeaient l'empreinte du projet : chaque commit de code redemandait la vérification complète, et une vérification en cours échouait dès qu'un render s'écrivait. `garde-tests.ps1` laisse maintenant de côté le dossier `sources-art/` à la racine, comme `docs/` : les vérifications ne lisent jamais ces sources. Les modèles exportés pour le moteur, eux, restent dans le projet et dans l'empreinte.
+Sur RogueHack, des sous-agents modélisent dans Blender pendant que la session principale code. Leurs fichiers (`.blend`, renders, modèles générés) changeaient l'empreinte du projet : chaque commit de code redemandait la vérification complète, et une vérification en cours échouait dès qu'un render s'écrivait. `garde-tests.ps1` laisse maintenant de côté le dossier `sources-art/` à la racine, comme `docs/` : les vérifications ne lisent pas ces sources, sauf celles de l'entrée au-dessus. Les modèles exportés pour le moteur, eux, restent dans le projet et dans l'empreinte.
 
 ## 2026-11-04 : choisir un modèle d'IA sans gaspiller de crédits
 

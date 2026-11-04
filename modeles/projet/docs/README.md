@@ -16,6 +16,7 @@ Cette carte dit où vit chaque chose et qui la tient à jour. CLAUDE.md la charg
     hooks/
       rappel-clear.ps1      prévient quand c'est le bon moment de faire /clear
       garde-tests.ps1       empêche de finir ou de commiter du code non vérifié
+      sources-verifiees.ps1  les fichiers de docs/ ou sources-art/ que les vérifications lisent quand même (vide au départ)
       garde-secrets.ps1     empêche de commiter un secret
       garde-methode.ps1     empêche de commiter un projet qui ne suit plus la méthode
       garde-generation-ia.ps1  empêche de générer avec une IA sans connaître son modèle

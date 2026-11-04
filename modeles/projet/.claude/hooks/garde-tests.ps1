@@ -17,8 +17,10 @@ $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $VerifierPath = Join-Path $ProjectDir 'outils\verifier.ps1'
 
 # Top-level entries left out of the fingerprint: editing them never breaks the code. sources-art holds art
-# sources (.blend files, generation outputs) that the checks never read.
+# sources (.blend files, generation outputs), out of the checks' reach except for the files that
+# sources-verifiees.ps1 lists in $CheckedSources: those stay in.
 $IgnoredEntryPattern = "`t(docs|sources-art|[^/]+\.md)$"
+. (Join-Path $PSScriptRoot 'sources-verifiees.ps1')
 
 function Invoke-Git([string[]]$Arguments) {
     $ErrorActionPreference = 'Continue'
@@ -34,8 +36,20 @@ function Get-Sha256([string]$Text) {
 }
 
 function Get-TreeFingerprint([string]$Tree) {
-    $entries = Invoke-Git @('ls-tree', $Tree) | Where-Object { $_ -notmatch $IgnoredEntryPattern }
+    $entries = @(Invoke-Git @('ls-tree', $Tree) | Where-Object { $_ -notmatch $IgnoredEntryPattern })
+    $entries += @(Get-CheckedSourceEntries $Tree)
     Get-Sha256 ($entries -join "`n")
+}
+
+# The tree's entries for $CheckedSources, in ls-tree's format. ls-tree takes no :(glob) pathspec, so a
+# diff against the empty tree finds their paths first. An empty list gives nothing: ls-tree without a
+# path would list the whole tree.
+function Get-CheckedSourceEntries([string]$Tree) {
+    if ($CheckedSources.Count -eq 0) { return }
+    $emptyTree = Invoke-Git @('hash-object', '-t', 'tree', '/dev/null')
+    $paths = @(Invoke-Git (@('-c', 'core.quotePath=false', 'diff-tree', '-r', '--name-only', $emptyTree, $Tree, '--') + $CheckedSources))
+    if ($paths.Count -eq 0) { return }
+    Invoke-Git (@('ls-tree', '-r', $Tree, '--') + $paths)
 }
 
 # Tree of the working folder as it is now, built in a copy of the index so the real one is untouched.
